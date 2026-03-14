@@ -21,7 +21,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     const authStore = useAuthStore();
     if (to.meta.requiresAuth && !authStore.loggedIn) {
-        window.location.href = '/osrs_kosestua_bounties/';
+        next("/");
         return;
     }
     if ((to.path === "/" || to.path === "/osrs_kosestua_bounties/") && authStore.loggedIn) {
