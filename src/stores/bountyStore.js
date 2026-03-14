@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
 import { fetchBountyData, saveBountyData } from '../services/dataService';
 
-const CACHE_DURATION_MS = 3 * 60 * 1000; // 5 minutes
+
+const CACHE_DURATION_MS = 5 * 60 * 1000;
 
 export const useBountyStore = defineStore('bountyStore', {
     state: () => ({
@@ -31,7 +32,44 @@ export const useBountyStore = defineStore('bountyStore', {
             });
             this.lastFetched = Date.now();
         },
-        // ... rest of actions unchanged
+        addActiveBounty(key) {
+            const bounty = this.bounties[key];
+            if (!bounty) return;
+            const alreadyActive = this.activeBounties.some(b => b.key === key);
+            if (alreadyActive) return;
+            this.activeBounties.push({ key, ...bounty });
+            this.saveToRemote();
+        },
+        rollBounty() {
+            const activeKeys = this.activeBounties.map(b => b.key);
+            const available = Object.entries(this.bounties)
+                .filter(([key, bounty]) => !activeKeys.includes(key) && !bounty.completed)
+                .map(([key, bounty]) => ({ key, ...bounty }));
+            if (available.length === 0) return;
+            const random = available[Math.floor(Math.random() * available.length)];
+            this.activeBounties.push(random);
+            this.saveToRemote();
+        },
+        claimBounty(playerKey, bountyKey) {
+            const player = this.players[playerKey];
+            if (!player) return;
+            player.score += 1;
+            if (this.bounties[bountyKey]) {
+                this.bounties[bountyKey].completed = true;
+            }
+            this.activeBounties = this.activeBounties.filter(b => b.key !== bountyKey);
+            this.saveToRemote();
+        },
+        addBounty(key, title, desc) {
+            if (this.bounties[key]) return;
+            this.bounties[key] = { title, desc, completed: false };
+            this.saveToRemote();
+        },
+        addPlayer(key, name) {
+            if (this.players[key]) return;
+            this.players[key] = { name, score: 0 };
+            this.saveToRemote();
+        }
     },
     persist: true
 });
