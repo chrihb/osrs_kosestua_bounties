@@ -10,7 +10,6 @@ export default defineConfig({
   base: '/osrs_kosestua_bounties/',
   plugins: [
     vue(),
-    vueDevTools(),
     tailwindcss(),
   ],
   resolve: {
