@@ -16,10 +16,15 @@ const showModal = ref(false);
       <p style="font-family: 'RuneScapeBold', serif; font-size: 1.7rem; color: #ffff00; word-break: break-word; width: 100%;">
         {{ bounty.title }}
       </p>
-      <p style="font-family: 'RuneScapeSmall', serif; font-size: 1.2rem; color: #a89060; line-height: 1.5; word-break: break-word; width: 100%;">
+      <p style="font-family: 'RuneScapeSmall', serif; font-size: 1.5rem; color: #a89060; line-height: 1.5; word-break: break-word; width: 100%;">
         {{ bounty.desc }}
       </p>
-      <button class="osrs-btn" style="margin-top: auto;" @click="showModal = true">Claim</button>
+      <div style="margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+        <p style="font-family: 'RuneScapeSmall', serif; font-size: 1.5rem; color: #c89b3c;">
+          ⭐ {{ bounty.points ?? 1 }} point{{ (bounty.points ?? 1) !== 1 ? 's' : '' }}
+        </p>
+        <button class="osrs-btn" @click="showModal = true">Claim</button>
+      </div>
     </div>
 
     <ClaimModal v-if="showModal" :bounty="bounty" @close="showModal = false" />

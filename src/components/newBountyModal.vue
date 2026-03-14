@@ -6,11 +6,12 @@ const emit = defineEmits(['close']);
 const bountyStore = useBountyStore();
 const title = ref('');
 const desc = ref('');
+const points = ref(1);
 
 function submit() {
   if (!title.value.trim() || !desc.value.trim()) return;
   const key = title.value.toLowerCase().replace(/\s+/g, '_');
-  bountyStore.addBounty(key, title.value, desc.value);
+  bountyStore.addBounty(key, title.value, desc.value, points.value);
   emit('close');
 }
 </script>
@@ -22,6 +23,10 @@ function submit() {
       <div class="flex flex-col gap-3">
         <input v-model="title" class="osrs-input" placeholder="Title" />
         <input v-model="desc" class="osrs-input" placeholder="Description" />
+        <div class="flex items-center gap-3">
+          <label style="font-family: 'RuneScape', serif; color: #ffff00;">Points</label>
+          <input v-model.number="points" type="number" min="1" max="99" class="osrs-input" style="width: 5rem;" />
+        </div>
         <div class="flex gap-2 justify-end mt-1">
           <button class="osrs-btn-ghost" @click="emit('close')">Cancel</button>
           <button class="osrs-btn" @click="submit">Add Bounty</button>

@@ -32,14 +32,6 @@ export const useBountyStore = defineStore('bountyStore', {
             });
             this.lastFetched = Date.now();
         },
-        addActiveBounty(key) {
-            const bounty = this.bounties[key];
-            if (!bounty) return;
-            const alreadyActive = this.activeBounties.some(b => b.key === key);
-            if (alreadyActive) return;
-            this.activeBounties.push({ key, ...bounty });
-            this.saveToRemote();
-        },
         rollBounty() {
             const activeKeys = this.activeBounties.map(b => b.key);
             const available = Object.entries(this.bounties)
@@ -50,19 +42,18 @@ export const useBountyStore = defineStore('bountyStore', {
             this.activeBounties.push(random);
             this.saveToRemote();
         },
+        addBounty(key, title, desc, points = 1) {
+            if (this.bounties[key]) return;
+            this.bounties[key] = { title, desc, points, completed: false };
+            this.saveToRemote();
+        },
         claimBounty(playerKey, bountyKey) {
             const player = this.players[playerKey];
             if (!player) return;
-            player.score += 1;
-            if (this.bounties[bountyKey]) {
-                this.bounties[bountyKey].completed = true;
-            }
+            const bounty = this.bounties[bountyKey];
+            player.score += bounty ? bounty.points : 1;
+            if (bounty) bounty.completed = true;
             this.activeBounties = this.activeBounties.filter(b => b.key !== bountyKey);
-            this.saveToRemote();
-        },
-        addBounty(key, title, desc) {
-            if (this.bounties[key]) return;
-            this.bounties[key] = { title, desc, completed: false };
             this.saveToRemote();
         },
         addPlayer(key, name) {
