@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useBountyStore } from "@/stores/bountyStore.js";
-import NewBountyModal from "@/components/NewBountyModal.vue";
+import NewBountyModal from "@/components/newBountyModal.vue";
 
 const emit = defineEmits(['close']);
 const bountyStore = useBountyStore();
