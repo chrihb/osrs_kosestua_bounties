@@ -1,35 +1,154 @@
-@import './base.css';
+@import "tailwindcss";
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+@font-face {
+    font-family: 'RuneScape';
+    src: url('@/assets/fonts/runescape.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'RuneScapeBold';
+    src: url('@/assets/fonts/runescape_bold.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'RuneScapeSmall';
+    src: url('@/assets/fonts/runescape_small.ttf') format('truetype');
 }
 
-a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
+* { box-sizing: border-box; }
+
+body {
+    background-color: #000;
+    background-image: url('@/assets/img/background.jpg');
+    background-repeat: repeat-y;
+    background-size: 70% auto;
+    background-position: center top;
+    min-height: 100vh;
+    color: #ffff00;
+    font-family: 'RuneScape', serif;
+    font-size: 1rem;
 }
 
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-}
-
-@media (min-width: 1024px) {
-  body {
+/* ── Panels ── */
+.osrs-scroll {
     display: flex;
-    place-items: center;
-  }
+    flex-direction: column;
+    border: none;
+    box-shadow: none;
+}
 
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
+.osrs-scroll-top {
+    background: url('@/assets/img/scroll_top.gif') top center no-repeat;
+    background-size: 100% 100%;
+    height: 60px;
+    flex-shrink: 0;
+    margin-bottom: -15px;
+    position: relative;
+    z-index: 1;
+}
+
+.osrs-scroll-bottom {
+    background: url('@/assets/img/scroll_bottom.gif') bottom center no-repeat;
+    background-size: 100% 100%;
+    height: 60px;
+    flex-shrink: 0;
+    margin-top: -15px;
+    position: relative;
+    z-index: 1;
+}
+
+.osrs-scroll-middle {
+    background: url('@/assets/img/scroll.gif') center / 85% auto repeat-y;
+    padding: 1rem 2.5rem;
+    flex: 1;
+}
+
+/* ── Buttons ── */
+.osrs-btn {
+    font-family: 'RuneScapeBold', serif;
+    font-size: 1.1rem;
+    color: #ffff00;
+    background: linear-gradient(180deg, #6e4e18 0%, #4e3510 50%, #3a2608 100%);
+    border: 2px solid;
+    border-color: #c8a44a #5a3a0a #5a3a0a #c8a44a;
+    box-shadow: inset 0 0 0 1px #1a0e0044, 2px 2px 0 #1a0e00;
+    padding: 0.3rem 1.1rem;
+    cursor: pointer;
+    transition: filter 0.1s;
+    letter-spacing: 0.02em;
+}
+.osrs-btn:hover {
+    background: linear-gradient(180deg, #8a6424 0%, #60421a 50%, #4a3010 100%);
+}
+.osrs-btn:active {
+    border-color: #5a3a0a #c8a44a #c8a44a #5a3a0a;
+    filter: brightness(0.85);
+    box-shadow: inset 0 0 0 1px #1a0e0044;
+}
+
+/* ── Ghost Buttons ── */
+.osrs-btn-ghost {
+    font-family: 'RuneScape', serif;
+    font-size: 1rem;
+    color: #ffff00;
+    background: transparent;
+    border: 2px solid;
+    border-color: #c8a44a #5a3a0a #5a3a0a #c8a44a;
+    box-shadow: inset 0 0 0 1px #1a0e0044;
+    padding: 0.3rem 1.1rem;
+    cursor: pointer;
+    transition: filter 0.1s;
+}
+.osrs-btn-ghost:hover { filter: brightness(1.25); }
+.osrs-btn-ghost:active {
+    border-color: #5a3a0a #c8a44a #c8a44a #5a3a0a;
+}
+
+/* ── Modals ── */
+.osrs-modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 50;
+}
+
+.osrs-modal {
+    background: #4a3214;
+    border: 2px solid;
+    border-color: #c8a44a #5a3a0a #5a3a0a #c8a44a;
+    box-shadow: inset 0 0 0 1px #2a1a04, 4px 4px 0 #1a0e00;
+    padding: 1.5rem;
+    min-width: 22rem;
+    max-width: 32rem;
+    width: 100%;
+}
+
+.osrs-modal h2 {
+    font-family: 'RuneScapeBold', serif;
+    font-size: 1.3rem;
+    color: #ff981f;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid #6e4e18;
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.75rem;
+}
+
+/* ── Inputs ── */
+.osrs-input {
+    background: #2a1a04;
+    border: 2px solid;
+    border-color: #5a3a0a #c8a44a #c8a44a #5a3a0a;
+    color: #ffff00;
+    padding: 0.4rem 0.75rem;
+    font-family: 'RuneScape', serif;
+    font-size: 1rem;
+    width: 100%;
+    outline: none;
+}
+.osrs-input:focus { border-color: #ff981f #7a5a14 #7a5a14 #ff981f; }
+.osrs-input::placeholder { color: #8a6a30; font-family: 'RuneScapeSmall', serif; }
+
+/* ── Dividers ── */
+.osrs-divider {
+    border: none;
+    border-top: 1px solid #6e4e18;
+    margin: 0.5rem 0;
 }
