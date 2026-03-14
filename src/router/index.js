@@ -18,14 +18,17 @@ const router = createRouter({
     ]
 });
 
-router.beforeEach((to) => {
+router.beforeEach((to, from, next) => {
     const authStore = useAuthStore();
     if (to.meta.requiresAuth && !authStore.loggedIn) {
-        return { path: "/" };
+        next("/");
+        return;
     }
-    if (to.path === "/" && authStore.loggedIn) {
-        return { path: "/home" };
+    if ((to.path === "/" || to.path === "/osrs_kosestua_bounties/") && authStore.loggedIn) {
+        next("/home");
+        return;
     }
+    next();
 });
 
 export default router;
