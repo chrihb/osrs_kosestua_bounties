@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { useAuthStore } from "@/stores/authStore.js";
-import LoginView from "@/views/LoginView.vue";
-import HomeView from "@/views/HomeView.vue";
+import LoginView from "@/views/loginView.vue";
+import HomeView from "@/views/homeView.vue";
 
 const router = createRouter({
     history: createWebHistory('/osrs_kosestua_bounties/'),
