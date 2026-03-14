@@ -4,16 +4,15 @@ import LoginView from "@/views/loginView.vue";
 import HomeView from "@/views/homeView.vue";
 
 const router = createRouter({
-    history: createWebHistory('/osrs_kosestua_bounties/'),
+    history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
             path: "/",
-            component: LoginView
-        },
-        {
-            path: "/home",
-            component: HomeView,
-            meta: { requiresAuth: true }
+            component: App,
+            children: [
+                { path: "", component: LoginView },
+                { path: "home", component: HomeView, meta: { requiresAuth: true } }
+            ]
         }
     ]
 });
