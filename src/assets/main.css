@@ -31,6 +31,7 @@ body {
     }
 }
 
+/* ── Scroll parchment ── */
 .osrs-scroll-top {
     background: url('@/assets/img/scroll_top.gif') top center no-repeat;
     background-size: 100% 100%;
@@ -57,6 +58,7 @@ body {
     z-index: 1;
 }
 
+/* ── Buttons ── */
 .osrs-btn {
     font-family: 'RuneScapeBold', serif;
     font-size: 1.1rem;
@@ -79,7 +81,6 @@ body {
     box-shadow: inset 0 0 0 1px #1a0e0044;
 }
 
-/* ── Ghost Buttons ── */
 .osrs-btn-ghost {
     font-family: 'RuneScape', serif;
     font-size: 1rem;
@@ -97,35 +98,6 @@ body {
     border-color: #5a3a0a #c8a44a #c8a44a #5a3a0a;
 }
 
-/* ── Modals ── */
-.osrs-modal-backdrop {
-    position: fixed; inset: 0;
-    background: rgba(0, 0, 0, 0.75);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 50;
-}
-
-.osrs-modal {
-    background: #4a3214;
-    border: 2px solid;
-    border-color: #c8a44a #5a3a0a #5a3a0a #c8a44a;
-    box-shadow: inset 0 0 0 1px #2a1a04, 4px 4px 0 #1a0e00;
-    padding: 1.5rem;
-    min-width: 20rem;
-    max-width: 90vw;
-    width: 100%;
-}
-
-.osrs-modal h2 {
-    font-family: 'RuneScapeBold', serif;
-    font-size: 1.3rem;
-    color: #ff981f;
-    letter-spacing: 0.04em;
-    border-bottom: 1px solid #6e4e18;
-    padding-bottom: 0.6rem;
-    margin-bottom: 0.75rem;
-}
-
 /* ── Inputs ── */
 .osrs-input {
     background: #2a1a04;
@@ -140,10 +112,3 @@ body {
 }
 .osrs-input:focus { border-color: #ff981f #7a5a14 #7a5a14 #ff981f; }
 .osrs-input::placeholder { color: #8a6a30; font-family: 'RuneScapeSmall', serif; }
-
-/* ── Dividers ── */
-.osrs-divider {
-    border: none;
-    border-top: 1px solid #6e4e18;
-    margin: 0.5rem 0;
-}

@@ -1,5 +1,6 @@
 <script setup>
 import PlayerEntry from "@/components/leaderboard/playerEntry.vue";
+import ScrollContainer from "@/components/scrollContainer.vue";
 import { useBountyStore } from "@/stores/bountyStore.js";
 import { computed } from "vue";
 
@@ -18,13 +19,13 @@ function handleSelect(playerKey) {
 </script>
 
 <template>
-  <div class="osrs-modal-backdrop">
-    <div class="osrs-modal">
-      <h2>⚔ Who claims this bounty?</h2>
-      <p style="font-family: 'RuneScapeSmall', serif; font-size: 1rem; color: #a89060; margin-bottom: 0.75rem;">
-        {{ bounty.title }}
-      </p>
-      <div class="flex flex-col gap-2">
+  <div class="fixed inset-0 bg-black/75 flex items-center justify-center z-50">
+    <ScrollContainer class="min-w-80 max-w-md w-full">
+      <h2 class="text-2xl font-bold text-[#ff981f] border-b border-[#6e4e18] pb-2 mb-3">
+        ⚔ Who claims this bounty?
+      </h2>
+      <p class="text-base text-[#a89060] mb-3">{{ bounty.title }}</p>
+      <div class="flex flex-col gap-2 max-h-96 overflow-y-auto">
         <PlayerEntry
             v-for="(player, index) in players"
             :key="index"
@@ -32,7 +33,7 @@ function handleSelect(playerKey) {
             @select="handleSelect"
         />
       </div>
-      <button class="osrs-btn-ghost w-full mt-4" @click="emit('close')">Cancel</button>
-    </div>
+      <button class="osrs-btn w-full mt-4" @click="emit('close')">Cancel</button>
+    </ScrollContainer>
   </div>
 </template>
