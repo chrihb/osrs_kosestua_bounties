@@ -1,5 +1,5 @@
 <script setup>
-import PlayerEntry from "@/components/playerEntry.vue";
+import PlayerEntry from "@/components/leaderboard/playerEntry.vue";
 import { useBountyStore } from "@/stores/bountyStore.js";
 import { computed } from "vue";
 

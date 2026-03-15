@@ -33,6 +33,7 @@ export const useBountyStore = defineStore('bountyStore', {
             this.lastFetched = Date.now();
         },
         rollBounty() {
+            this.loadFromRemote(true);
             const activeKeys = this.activeBounties.map(b => b.key);
             const available = Object.entries(this.bounties)
                 .filter(([key, bounty]) => !activeKeys.includes(key) && !bounty.completed)

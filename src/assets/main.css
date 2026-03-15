@@ -13,8 +13,6 @@
     src: url('@/assets/fonts/runescape_small.ttf') format('truetype');
 }
 
-* { box-sizing: border-box; }
-
 body {
     background-color: #000;
     background-image: url('@/assets/img/background.jpg');
@@ -27,12 +25,10 @@ body {
     font-size: 1rem;
 }
 
-/* ── Panels ── */
-.osrs-scroll {
-    display: flex;
-    flex-direction: column;
-    border: none;
-    box-shadow: none;
+@media (max-width: 1160px) {
+    body {
+        background-size: 100% auto;
+    }
 }
 
 .osrs-scroll-top {
@@ -45,6 +41,12 @@ body {
     z-index: 1;
 }
 
+.osrs-scroll-middle {
+    background: url('@/assets/img/scroll.gif') center / 85% auto repeat-y;
+    padding: 1rem 2.5rem;
+    flex: 1;
+}
+
 .osrs-scroll-bottom {
     background: url('@/assets/img/scroll_bottom.gif') bottom center no-repeat;
     background-size: 100% 100%;
@@ -55,13 +57,6 @@ body {
     z-index: 1;
 }
 
-.osrs-scroll-middle {
-    background: url('@/assets/img/scroll.gif') center / 85% auto repeat-y;
-    padding: 1rem 2.5rem;
-    flex: 1;
-}
-
-/* ── Buttons ── */
 .osrs-btn {
     font-family: 'RuneScapeBold', serif;
     font-size: 1.1rem;
@@ -116,8 +111,8 @@ body {
     border-color: #c8a44a #5a3a0a #5a3a0a #c8a44a;
     box-shadow: inset 0 0 0 1px #2a1a04, 4px 4px 0 #1a0e00;
     padding: 1.5rem;
-    min-width: 22rem;
-    max-width: 32rem;
+    min-width: 20rem;
+    max-width: 90vw;
     width: 100%;
 }
 
