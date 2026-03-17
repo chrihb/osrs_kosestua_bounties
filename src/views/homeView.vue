@@ -16,11 +16,6 @@ onMounted(() => bountyStore.loadFromRemote());
       <BountyContainer class="grid-bounties" />
       <Leaderboard class="grid-leaderboard"/>
     </div>
-
-    <button class="osrs-btn refresh-btn"
-        @click="bountyStore.loadFromRemote(true)">
-      Refresh
-    </button>
   </div>
 </template>
 
@@ -54,12 +49,6 @@ onMounted(() => bountyStore.loadFromRemote());
   grid-row-start: 2;
   align-self: start;
 }
-.refresh-btn {
-  position: fixed;
-  bottom: 0.5rem;
-  right: 23.75rem;
-}
-
 @media (max-width: 1200px) {
   .home-grid {
     grid-template-columns: 1fr;
@@ -81,9 +70,6 @@ onMounted(() => bountyStore.loadFromRemote());
     grid-row-start: 3;
     max-width: 24rem;
     width: 100%;
-  }
-  .refresh-btn {
-    right: 5rem;
   }
 }
 
