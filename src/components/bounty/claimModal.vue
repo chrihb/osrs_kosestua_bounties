@@ -19,13 +19,13 @@ function handleSelect(playerKey) {
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-black/75 flex items-center justify-center z-50">
-    <ScrollContainer class="min-w-80 max-w-md w-full">
-      <h2 class="text-2xl font-bold text-[#ff981f] border-b border-[#6e4e18] pb-2 mb-3">
-        ⚔ Who claims this bounty?
+  <div class="modal-overlay">
+    <ScrollContainer class="modal-scroll">
+      <h2 class="modal-heading">
+        Who claims this bounty?
       </h2>
-      <p class="text-base text-[#a89060] mb-3">{{ bounty.title }}</p>
-      <div class="flex flex-col gap-2 max-h-96 overflow-y-auto">
+      <p class="claim-subtitle">{{ bounty.title }}</p>
+      <div class="osrs-panel player-list">
         <PlayerEntry
             v-for="(player, index) in players"
             :key="index"
@@ -33,7 +33,34 @@ function handleSelect(playerKey) {
             @select="handleSelect"
         />
       </div>
-      <button class="osrs-btn w-full mt-4" @click="emit('close')">Cancel</button>
+      <div class="cancel-wrapper">
+        <button class="osrs-btn" @click="emit('close')">Cancel</button>
+      </div>
     </ScrollContainer>
   </div>
 </template>
+
+<style scoped>
+.modal-scroll {
+  max-width: 28rem;
+}
+.claim-subtitle {
+  font-family: 'RuneScapeBold', serif;
+  font-size: 1.4rem;
+  color: #ffff00;
+  text-align: center;
+  margin-bottom: 0.75rem;
+}
+.player-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 24rem;
+  overflow-y: auto;
+}
+.cancel-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+</style>

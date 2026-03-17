@@ -10,17 +10,89 @@ onMounted(() => bountyStore.loadFromRemote());
 </script>
 
 <template>
-  <div class="flex items-center justify-center m-6">
-    <div class="grid grid-cols-[1fr_auto] grid-rows-[auto_1fr] max-w-5xl gap-6 justify-center">
-      <Title class="text-4xl col-span-2 row-start-1"/>
-      <BountyContainer class="col-start-1 row-start-2" />
-      <Leaderboard class="col-start-2 row-start-2"/>
-
+  <div class="home-page">
+    <div class="home-grid">
+      <Title class="grid-title"/>
+      <BountyContainer class="grid-bounties" />
+      <Leaderboard class="grid-leaderboard"/>
     </div>
 
-    <button class="osrs-btn fixed bottom-2 right-95"
+    <button class="osrs-btn refresh-btn"
         @click="bountyStore.loadFromRemote(true)">
       Refresh
     </button>
   </div>
 </template>
+
+<style scoped>
+.home-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.5rem;
+}
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto 1fr;
+  max-width: 64rem;
+  gap: 1.5rem;
+  justify-content: center;
+}
+.grid-title {
+  font-size: 2.25rem;
+  grid-column: span 2;
+  grid-row-start: 1;
+}
+.grid-bounties {
+  grid-column-start: 1;
+  grid-row-start: 2;
+  align-self: start;
+}
+.grid-leaderboard {
+  grid-column-start: 2;
+  grid-row-start: 2;
+  align-self: start;
+}
+.refresh-btn {
+  position: fixed;
+  bottom: 0.5rem;
+  right: 23.75rem;
+}
+
+@media (max-width: 1200px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 1rem;
+    justify-items: center;
+  }
+  .grid-title {
+    grid-column: 1;
+  }
+  .grid-bounties {
+    grid-column: 1;
+    grid-row-start: 2;
+    max-width: 26rem;
+    width: 100%;
+  }
+  .grid-leaderboard {
+    grid-column: 1;
+    grid-row-start: 3;
+    max-width: 24rem;
+    width: 100%;
+  }
+  .refresh-btn {
+    right: 5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-page {
+    margin: 0.75rem;
+  }
+  .grid-title {
+    font-size: 1.5rem;
+  }
+}
+</style>

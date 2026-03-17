@@ -16,14 +16,14 @@ function submit() {
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-black/75 flex items-center justify-center z-50">
-    <ScrollContainer class="min-w-80 max-w-sm w-full">
-      <h2 class="text-2xl font-bold text-[#ff981f] border-b border-[#6e4e18] pb-2 mb-3">
-        ➕ Add Player
+  <div class="modal-overlay">
+    <ScrollContainer class="modal-scroll">
+      <h2 class="modal-heading">
+        Add Player
       </h2>
-      <div class="flex flex-col gap-3">
+      <div class="form-fields">
         <input v-model="name" class="osrs-input" placeholder="Player name" />
-        <div class="flex gap-2 justify-end mt-1">
+        <div class="form-actions">
           <button class="osrs-btn" @click="emit('close')">Cancel</button>
           <button class="osrs-btn" @click="submit">Add Player</button>
         </div>
@@ -31,3 +31,13 @@ function submit() {
     </ScrollContainer>
   </div>
 </template>
+
+<style scoped>
+.osrs-input {
+  color: #ffff00;
+}
+.osrs-input::placeholder {
+  color: #ffff00;
+  opacity: 0.5;
+}
+</style>

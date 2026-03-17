@@ -18,19 +18,19 @@ function submit() {
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-black/75 flex items-center justify-center z-50">
-    <ScrollContainer class="min-w-80 max-w-sm w-full">
-      <h2 class="text-2xl font-bold text-[#ff981f] border-b border-[#6e4e18] pb-2 mb-3">
-        📜 New Bounty
+  <div class="modal-overlay">
+    <ScrollContainer class="modal-scroll">
+      <h2 class="modal-heading">
+        New Bounty
       </h2>
-      <div class="flex flex-col gap-3">
+      <div class="form-fields">
         <input v-model="title" class="osrs-input" placeholder="Title" />
         <input v-model="desc" class="osrs-input" placeholder="Description" />
-        <div class="flex items-center gap-3">
-          <label class="text-yellow-300">Points</label>
-          <input v-model.number="points" type="number" min="1" max="99" class="osrs-input w-20" />
+        <div class="points-row">
+          <label class="points-label">Points</label>
+          <input v-model.number="points" type="number" min="1" max="99" class="osrs-input points-input" />
         </div>
-        <div class="flex gap-2 justify-end mt-1">
+        <div class="form-actions">
           <button class="osrs-btn" @click="emit('close')">Cancel</button>
           <button class="osrs-btn" @click="submit">Add Bounty</button>
         </div>
@@ -38,3 +38,25 @@ function submit() {
     </ScrollContainer>
   </div>
 </template>
+
+<style scoped>
+.osrs-input {
+  color: #ffff00;
+}
+.osrs-input::placeholder {
+  color: #ffff00;
+  opacity: 0.5;
+}
+.points-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.points-label {
+  color: #ffff00;
+  font-family: 'RuneScapeBold', serif;
+}
+.points-input {
+  width: 5rem;
+}
+</style>

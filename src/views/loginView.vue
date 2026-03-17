@@ -46,16 +46,16 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
 </script>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center">
+  <div class="login-page">
     <div class="osrs-scroll" style="width: 22rem;">
       <div class="osrs-scroll-top" />
-      <div class="osrs-scroll-middle flex flex-col items-center gap-6 py-4">
+      <div class="osrs-scroll-middle login-content">
         <h2 style="font-family: 'RuneScapeBold', serif; font-size: 1.5rem; color: #ffff00; text-align: center;">
           Enter PIN
         </h2>
 
         <!-- PIN dots -->
-        <div class="flex gap-3">
+        <div class="pin-dots">
           <div v-for="i in 4" :key="i"
                style="width: 1rem; height: 1rem; border-radius: 50%; border: 2px solid #4a3b1f;"
                :style="{ background: pin.length >= i ? '#ffff00' : 'transparent' }"
@@ -67,7 +67,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
         </p>
 
         <!-- Numpad -->
-        <div class="grid grid-cols-3 gap-2">
+        <div class="numpad">
           <button
               v-for="digit in ['1','2','3','4','5','6','7','8','9','','0','⌫']"
               :key="digit"
@@ -84,3 +84,29 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
     </div>
   </div>
 </template>
+
+<style scoped>
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.login-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+.pin-dots {
+  display: flex;
+  gap: 0.75rem;
+}
+.numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+</style>

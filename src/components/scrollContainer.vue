@@ -7,3 +7,10 @@
     <div class="osrs-scroll-bottom" />
   </div>
 </template>
+
+<style scoped>
+.osrs-scroll {
+  display: flex;
+  flex-direction: column;
+}
+</style>

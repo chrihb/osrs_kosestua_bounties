@@ -13,20 +13,48 @@ const showModal = ref(false);
 </script>
 
 <template>
-  <ScrollContainer class="min-w-60">
-    <div class="flex flex-col gap-2">
-      <h2 class="text-2xl font-bold">
+  <ScrollContainer class="leaderboard-scroll">
+    <div class="leaderboard-inner">
+      <h2 class="leaderboard-heading">
         Leaderboard
       </h2>
-      <LeaderboardEntry
-          v-for="(player, index) in players"
-          :key="index"
-          :player="player"
-          :rank="index + 1"
-      />
+      <div class="osrs-panel player-list">
+        <LeaderboardEntry
+            v-for="(player, index) in players"
+            :key="index"
+            :player="player"
+            :rank="index + 1"
+        />
+      </div>
       <button class="osrs-btn" @click="showModal = true">+ Add Player</button>
     </div>
   </ScrollContainer>
 
   <AddPlayerModal v-if="showModal" @close="showModal = false" />
 </template>
+
+<style scoped>
+.leaderboard-scroll {
+  min-width: 15rem;
+}
+.leaderboard-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.player-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+.leaderboard-heading {
+  font-family: 'RuneScapeBold', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ff981f;
+  text-shadow: 1px 1px 0 #000;
+  text-align: center;
+}
+</style>

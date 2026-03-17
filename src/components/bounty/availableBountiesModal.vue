@@ -10,34 +10,95 @@ const bounties = computed(() =>
     Object.entries(bountyStore.bounties).map(([key, bounty]) => ({ key, ...bounty }))
 );
 const showNewBounty = ref(false);
+
+function openNewBounty() {
+  showNewBounty.value = true;
+}
+
+function closeNewBounty() {
+  showNewBounty.value = false;
+}
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-black/75 flex items-center justify-center z-50">
-    <ScrollContainer class="min-w-150">
-      <h2 class="text-2xl font-bold text-[#ff981f] border-b border-[#6e4e18] pb-2 mb-3">
-        📜 All Bounties
+  <div v-if="!showNewBounty" class="modal-overlay">
+    <ScrollContainer class="modal-scroll">
+      <h2 class="modal-heading">
+        All Bounties
       </h2>
-      <div class="flex flex-col gap-2">
+      <div class="osrs-panel bounty-list">
         <div
             v-for="bounty in bounties"
             :key="bounty.key"
-            class="flex justify-between items-center border-b border-[#6e4e18] py-1"
+            class="osrs-divider bounty-row"
         >
           <div>
-            <p class="text-xl font-bold">{{ bounty.title }}</p>
-            <p class="text-base text-[#a89060]">{{ bounty.desc }}</p>
+            <p class="bounty-title">{{ bounty.title }}</p>
+            <p class="bounty-desc">{{ bounty.desc }}</p>
           </div>
-          <span :class="bounty.completed ? 'text-green-400' : 'text-[#a89060]'" class="text-base ml-4">
+          <span :class="bounty.completed ? 'status-complete' : 'status-incomplete'" class="bounty-status">
             {{ bounty.completed ? 'Completed' : 'Incomplete' }}
           </span>
         </div>
       </div>
-      <div class="flex justify-between gap-2 mt-4">
+      <div class="modal-actions">
         <button class="osrs-btn" @click="emit('close')">Close</button>
-        <button class="osrs-btn" @click="showNewBounty = true">+ New Bounty</button>
+        <button class="osrs-btn" @click="openNewBounty">+ New Bounty</button>
       </div>
     </ScrollContainer>
   </div>
-  <NewBountyModal v-if="showNewBounty" @close="showNewBounty = false" />
+  <NewBountyModal v-if="showNewBounty" @close="closeNewBounty" />
 </template>
+
+<style scoped>
+.modal-scroll {
+  width: 30rem;
+  max-width: 90vw;
+}
+.bounty-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 24rem;
+  overflow-y: auto;
+}
+.bounty-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0;
+  min-width: 0;
+}
+.bounty-row > div {
+  min-width: 0;
+  overflow: hidden;
+}
+.bounty-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  word-break: break-word;
+}
+.bounty-desc {
+  font-size: 1rem;
+  color: #a89060;
+  word-break: break-word;
+}
+.bounty-status {
+  font-size: 1rem;
+  margin-left: 1rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.status-complete {
+  color: #00ff00;
+}
+.status-incomplete {
+  color: #ff3030;
+}
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+</style>

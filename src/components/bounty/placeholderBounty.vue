@@ -4,11 +4,29 @@ const bountyStore = useBountyStore();
 </script>
 
 <template>
-  <div class="bg-black flex flex-col p-2 min-w-48 h-full">
-    <p class="text-4xl font-bold text-center">Roll a Bounty</p>
-    <div class="flex-1" />
-    <div class="flex justify-center">
-      <button class="osrs-btn" @click="bountyStore.rollBounty()">🎲 Roll</button>
+  <div class="bounty-card placeholder-card">
+    <p class="placeholder-title">Roll a Bounty</p>
+    <div class="spacer" />
+    <div class="placeholder-action">
+      <button class="osrs-btn" @click="bountyStore.rollBounty()">Roll</button>
     </div>
   </div>
 </template>
+
+<style scoped>
+.placeholder-card {
+  min-height: 12rem;
+}
+.placeholder-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  text-align: center;
+}
+.spacer {
+  flex: 1;
+}
+.placeholder-action {
+  display: flex;
+  justify-content: center;
+}
+</style>

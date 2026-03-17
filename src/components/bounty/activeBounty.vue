@@ -18,18 +18,51 @@ const handleClick = () => {
 </script>
 
 <template>
-  <div class="bg-black flex flex-col p-2 min-w-48 h-full">
-    <div class="flex flex-col items-center gap-1">
-      <p class="text-4xl font-bold text-center">{{ bounty.title }}</p>
-      <p class="text-2xl text-center">{{ bounty.desc }}</p>
+  <div class="bounty-card">
+    <div class="bounty-info">
+      <p class="bounty-title">{{ bounty.title }}</p>
+      <p class="bounty-desc">{{ bounty.desc }}</p>
     </div>
-    <div class="flex-1" />
-    <div class="flex flex-col items-center gap-2">
-      <p class="text-xl font-bold">
-        ⭐ {{ bounty.points ?? 1 }} point{{ (bounty.points ?? 1) !== 1 ? 's' : '' }}
+    <div class="spacer" />
+    <div class="bounty-bottom">
+      <p class="bounty-points">
+        {{ bounty.points ?? 1 }} point{{ (bounty.points ?? 1) !== 1 ? 's' : '' }}
       </p>
       <button class="osrs-btn" @click="handleClick">Claim</button>
     </div>
     <ClaimModal v-if="showModal" :bounty="bounty" @close="showModal = false" />
   </div>
 </template>
+
+<style scoped>
+.bounty-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+.bounty-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  text-align: center;
+}
+.bounty-desc {
+  font-size: 1.5rem;
+  text-align: center;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+.spacer {
+  flex: 1;
+}
+.bounty-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.bounty-points {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+</style>

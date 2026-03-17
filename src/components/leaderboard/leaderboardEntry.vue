@@ -6,8 +6,8 @@ defineProps({
 </script>
 
 <template>
-  <div class="flex flex-row justify-between text-xl">
-    <div class="flex flex-row gap-2">
+  <div class="osrs-divider entry">
+    <div class="entry-left">
       <span>
         {{ rank }}.
       </span>
@@ -18,3 +18,18 @@ defineProps({
     </p>
   </div>
 </template>
+
+<style scoped>
+.entry {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 1.25rem;
+  padding: 0.4rem 0;
+}
+.entry-left {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+</style>

@@ -32,8 +32,8 @@ export const useBountyStore = defineStore('bountyStore', {
             });
             this.lastFetched = Date.now();
         },
-        rollBounty() {
-            this.loadFromRemote(true);
+        async rollBounty() {
+            await this.loadFromRemote(true);
             const activeKeys = this.activeBounties.map(b => b.key);
             const available = Object.entries(this.bounties)
                 .filter(([key, bounty]) => !activeKeys.includes(key) && !bounty.completed)
@@ -41,26 +41,29 @@ export const useBountyStore = defineStore('bountyStore', {
             if (available.length === 0) return;
             const random = available[Math.floor(Math.random() * available.length)];
             this.activeBounties.push(random);
-            this.saveToRemote();
+            await this.saveToRemote();
         },
-        addBounty(key, title, desc, points = 1) {
+        async addBounty(key, title, desc, points = 1) {
+            await this.loadFromRemote(true);
             if (this.bounties[key]) return;
             this.bounties[key] = { title, desc, points, completed: false };
-            this.saveToRemote();
+            await this.saveToRemote();
         },
-        claimBounty(playerKey, bountyKey) {
+        async claimBounty(playerKey, bountyKey) {
+            await this.loadFromRemote(true);
             const player = this.players[playerKey];
             if (!player) return;
             const bounty = this.bounties[bountyKey];
             player.score += bounty ? bounty.points : 1;
             if (bounty) bounty.completed = true;
             this.activeBounties = this.activeBounties.filter(b => b.key !== bountyKey);
-            this.saveToRemote();
+            await this.saveToRemote();
         },
-        addPlayer(key, name) {
+        async addPlayer(key, name) {
+            await this.loadFromRemote(true);
             if (this.players[key]) return;
             this.players[key] = { name, score: 0 };
-            this.saveToRemote();
+            await this.saveToRemote();
         }
     },
     persist: true
