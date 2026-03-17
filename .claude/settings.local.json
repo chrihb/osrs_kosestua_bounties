@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(npm uninstall:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(find /c/Users/chris/WebstormProjects/osrs_kosestua_bounties -type f \\\\\\(-name *.ts -o -name *.tsx -o -name *.js -o -name *.jsx -o -name *.json \\\\\\))"
     ]
   }
 }

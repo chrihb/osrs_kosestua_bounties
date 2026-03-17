@@ -59,6 +59,35 @@ export const useBountyStore = defineStore('bountyStore', {
             this.activeBounties = this.activeBounties.filter(b => b.key !== bountyKey);
             await this.saveToRemote();
         },
+        async updateBounty(key, title, desc, points) {
+            await this.loadFromRemote(true);
+            const bounty = this.bounties[key];
+            if (!bounty) return;
+            bounty.title = title;
+            bounty.desc = desc;
+            bounty.points = points;
+            // update active bounties too
+            const active = this.activeBounties.find(b => b.key === key);
+            if (active) {
+                active.title = title;
+                active.desc = desc;
+                active.points = points;
+            }
+            await this.saveToRemote();
+        },
+        async reactivateBounty(key) {
+            await this.loadFromRemote(true);
+            const bounty = this.bounties[key];
+            if (!bounty) return;
+            bounty.completed = false;
+            await this.saveToRemote();
+        },
+        async deleteBounty(key) {
+            await this.loadFromRemote(true);
+            delete this.bounties[key];
+            this.activeBounties = this.activeBounties.filter(b => b.key !== key);
+            await this.saveToRemote();
+        },
         async addPlayer(key, name) {
             await this.loadFromRemote(true);
             if (this.players[key]) return;

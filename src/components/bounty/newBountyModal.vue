@@ -3,16 +3,34 @@ import { ref } from "vue";
 import { useBountyStore } from "@/stores/bountyStore.js";
 import ScrollContainer from "@/components/scrollContainer.vue";
 
+const props = defineProps({
+  bounty: { type: Object, default: null }
+});
 const emit = defineEmits(['close']);
 const bountyStore = useBountyStore();
-const title = ref('');
-const desc = ref('');
-const points = ref(1);
+const isEditing = !!props.bounty;
+const title = ref(props.bounty?.title ?? '');
+const desc = ref(props.bounty?.desc ?? '');
+const points = ref(props.bounty?.points ?? 1);
 
 function submit() {
   if (!title.value.trim() || !desc.value.trim()) return;
-  const key = title.value.toLowerCase().replace(/\s+/g, '_');
-  bountyStore.addBounty(key, title.value, desc.value, points.value);
+  if (isEditing) {
+    bountyStore.updateBounty(props.bounty.key, title.value, desc.value, points.value);
+  } else {
+    const key = title.value.toLowerCase().replace(/\s+/g, '_');
+    bountyStore.addBounty(key, title.value, desc.value, points.value);
+  }
+  emit('close');
+}
+
+function reactivate() {
+  bountyStore.reactivateBounty(props.bounty.key);
+  emit('close');
+}
+
+function deleteBounty() {
+  bountyStore.deleteBounty(props.bounty.key);
   emit('close');
 }
 </script>
@@ -21,7 +39,7 @@ function submit() {
   <div class="modal-overlay">
     <ScrollContainer class="modal-scroll">
       <h2 class="modal-heading">
-        New Bounty
+        {{ isEditing ? 'Edit Bounty' : 'New Bounty' }}
       </h2>
       <div class="form-fields">
         <input v-model="title" class="osrs-input" placeholder="Title" />
@@ -29,10 +47,12 @@ function submit() {
         <div class="points-row">
           <label class="points-label">Points</label>
           <input v-model.number="points" type="number" min="1" max="99" class="osrs-input points-input" />
+          <button v-if="isEditing && bounty.completed" class="osrs-btn reactivate-btn" @click="reactivate">Reactivate</button>
         </div>
         <div class="form-actions">
           <button class="osrs-btn" @click="emit('close')">Cancel</button>
-          <button class="osrs-btn" @click="submit">Add Bounty</button>
+          <button v-if="isEditing" class="osrs-btn delete-btn" @click="deleteBounty">Delete</button>
+          <button class="osrs-btn" @click="submit">{{ isEditing ? 'Save' : 'Add Bounty' }}</button>
         </div>
       </div>
     </ScrollContainer>
@@ -58,5 +78,11 @@ function submit() {
 }
 .points-input {
   width: 5rem;
+}
+.reactivate-btn {
+  margin-left: auto;
+}
+.delete-btn {
+  color: #ff3030;
 }
 </style>
