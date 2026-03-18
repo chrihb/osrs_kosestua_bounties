@@ -2,94 +2,89 @@ import { defineStore } from 'pinia';
 import { fetchBountyData, saveBountyData } from '../services/dataService';
 
 
-const CACHE_DURATION_MS = 5 * 60 * 1000;
-
 export const useBountyStore = defineStore('bountyStore', {
     state: () => ({
         bounties: {},
-        activeBounties: [],
-        players: {},
-        lastFetched: null
+        players: {}
     }),
+    getters: {
+        activeBounties: (state) =>
+            Object.entries(state.bounties)
+                .filter(([, b]) => b.active && !b.completed)
+                .map(([key, b]) => ({ key, ...b }))
+    },
     actions: {
-        async loadFromRemote(force = false) {
-            const now = Date.now();
-            const cacheExpired = !this.lastFetched || (now - this.lastFetched) > CACHE_DURATION_MS;
-
-            if (!force && !cacheExpired) return;
-
+        async loadFromRemote() {
             const data = await fetchBountyData();
+
+            // Migrate old format: merge activeBounties into bounties
+            if (data.activeBounties) {
+                for (const ab of data.activeBounties) {
+                    if (data.bounties[ab.key]) {
+                        data.bounties[ab.key].active = true;
+                    }
+                }
+            }
+
             this.bounties = data.bounties;
-            this.activeBounties = data.activeBounties;
             this.players = data.players;
-            this.lastFetched = now;
         },
         async saveToRemote() {
             await saveBountyData({
                 bounties: this.bounties,
-                activeBounties: this.activeBounties,
                 players: this.players
             });
-            this.lastFetched = Date.now();
         },
         async rollBounty() {
-            await this.loadFromRemote(true);
-            const activeKeys = this.activeBounties.map(b => b.key);
+            await this.loadFromRemote();
             const available = Object.entries(this.bounties)
-                .filter(([key, bounty]) => !activeKeys.includes(key) && !bounty.completed)
-                .map(([key, bounty]) => ({ key, ...bounty }));
+                .filter(([, b]) => !b.active && !b.completed);
             if (available.length === 0) return;
-            const random = available[Math.floor(Math.random() * available.length)];
-            this.activeBounties.push(random);
+            const [key] = available[Math.floor(Math.random() * available.length)];
+            this.bounties[key].active = true;
             await this.saveToRemote();
         },
         async addBounty(key, title, desc, points = 1) {
-            await this.loadFromRemote(true);
+            await this.loadFromRemote();
             if (this.bounties[key]) return;
-            this.bounties[key] = { title, desc, points, completed: false };
+            this.bounties[key] = { title, desc, points, completed: false, active: false };
             await this.saveToRemote();
         },
         async claimBounty(playerKey, bountyKey) {
-            await this.loadFromRemote(true);
+            await this.loadFromRemote();
             const player = this.players[playerKey];
             if (!player) return;
             const bounty = this.bounties[bountyKey];
             player.score += bounty ? bounty.points : 1;
-            if (bounty) bounty.completed = true;
-            this.activeBounties = this.activeBounties.filter(b => b.key !== bountyKey);
+            if (bounty) {
+                bounty.completed = true;
+                bounty.active = false;
+            }
             await this.saveToRemote();
         },
         async updateBounty(key, title, desc, points) {
-            await this.loadFromRemote(true);
+            await this.loadFromRemote();
             const bounty = this.bounties[key];
             if (!bounty) return;
             bounty.title = title;
             bounty.desc = desc;
             bounty.points = points;
-            // update active bounties too
-            const active = this.activeBounties.find(b => b.key === key);
-            if (active) {
-                active.title = title;
-                active.desc = desc;
-                active.points = points;
-            }
             await this.saveToRemote();
         },
         async reactivateBounty(key) {
-            await this.loadFromRemote(true);
+            await this.loadFromRemote();
             const bounty = this.bounties[key];
             if (!bounty) return;
             bounty.completed = false;
             await this.saveToRemote();
         },
         async deleteBounty(key) {
-            await this.loadFromRemote(true);
+            await this.loadFromRemote();
             delete this.bounties[key];
-            this.activeBounties = this.activeBounties.filter(b => b.key !== key);
             await this.saveToRemote();
         },
         async addPlayer(key, name) {
-            await this.loadFromRemote(true);
+            await this.loadFromRemote();
             if (this.players[key]) return;
             this.players[key] = { name, score: 0 };
             await this.saveToRemote();

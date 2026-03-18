@@ -1,0 +1,214 @@
+{
+  "bounties": {
+    "the_inferno": {
+      "title": "The Inferno",
+      "desc": "Get an Infernal Cape!",
+      "points": 10,
+      "completed": false
+    },
+    "pack_opening!!": {
+      "title": "Pack Opening!!",
+      "desc": "Stack 10 Master Clues and open them in one go!",
+      "points": 3,
+      "completed": false
+    },
+    "royal_titans": {
+      "title": "Royal Titans",
+      "desc": "Get both prayer scrolls from the Royal Titans!",
+      "points": 2,
+      "completed": false
+    },
+    "glizzardman_shamans_:weary:": {
+      "title": "Glizzardman Shamans 😩",
+      "desc": "Get the Dragon Warhammer!",
+      "points": 4,
+      "completed": false
+    },
+    "tombs_of_amascut": {
+      "title": "Tombs of Amascut",
+      "desc": "Get a purple from ToA!",
+      "points": 2,
+      "completed": false
+    },
+    "chambers_of_xeric": {
+      "title": "Chambers of Xeric",
+      "desc": "Get a purple from CoX!",
+      "points": 3,
+      "completed": false
+    },
+    "huge_for_the_account!": {
+      "title": "Huge for the account!",
+      "desc": "Get as skill to 99!",
+      "points": 3,
+      "completed": false
+    },
+    "the_colosseum": {
+      "title": "The Colosseum",
+      "desc": "Get a Dizana's Quiver!",
+      "points": 10,
+      "completed": false
+    },
+    "yama": {
+      "title": "Yama Mama",
+      "desc": "Get a piece of Oathplate from the big red guy!",
+      "points": 4,
+      "completed": false
+    },
+    "funny_feeling": {
+      "title": "Funny Feeling",
+      "desc": "Get any pet!",
+      "points": 4,
+      "completed": false
+    },
+    "grand(ish)master!": {
+      "title": "Grand(ish)master",
+      "desc": "Finish the master combat achievements!",
+      "points": 6,
+      "completed": false
+    },
+    "3,_2,_1_-_mage!": {
+      "title": "3, 2, 1 - MAGE!",
+      "desc": "Get a seed from The Gauntlet!",
+      "points": 3,
+      "completed": false
+    },
+    "tormenting_myself_with_demons": {
+      "title": "Tormenting Myself with Demons",
+      "desc": "Get a tormented synapse!",
+      "points": 2,
+      "completed": false
+    },
+    "who_made_this_dumbass_skill?": {
+      "title": "Who made this dumbass skill?",
+      "desc": "Get 1m XP in Runecrafting :(",
+      "points": 3,
+      "completed": false
+    },
+    "there's_money_in_slayer!": {
+      "title": "There's Money in Slayer!",
+      "desc": "Get any unique drop from a Slayer monster!",
+      "points": 1,
+      "completed": false
+    },
+    "captain_daddy": {
+      "title": "Captain Daddy",
+      "desc": "Chart the entire ocean!",
+      "points": 4,
+      "completed": false
+    },
+    "perilous_moons": {
+      "title": "Perilous Moons",
+      "desc": "Finish an armor-set in the Moons of Peril!",
+      "points": 3,
+      "completed": false
+    },
+    "actually,_that's_not_optimal_🤓": {
+      "title": "Actually, that's not optimal 🤓",
+      "desc": "Finish any grandmaster speedrun time!",
+      "points": 2,
+      "completed": false
+    },
+    "pleae": {
+      "title": "Pleae",
+      "desc": "PK 5 people in the wilderness!",
+      "points": 2,
+      "completed": false
+    },
+    "general_garagedoor": {
+      "title": "General Garagedoor",
+      "desc": "Get a piece of Bandos! (No, ofcourse the boots dont count)",
+      "points": 2,
+      "completed": false
+    },
+    "beef!": {
+      "title": "Beef!",
+      "desc": "Get the Beef pet!",
+      "points": 1,
+      "completed": false
+    },
+    "money_making_guide": {
+      "title": "Money Making Guide",
+      "desc": "Get a unique drop from the Doom of Mokhaiotl",
+      "points": 3,
+      "completed": false
+    }
+  },
+  "activeBounties": [
+    {
+      "key": "pleae",
+      "title": "Pleae",
+      "desc": "PK 5 people in the wilderness!",
+      "points": 2,
+      "completed": false
+    },
+    {
+      "key": "tormenting_myself_with_demons",
+      "title": "Tormenting Myself with Demons",
+      "desc": "Get a tormented synapse!",
+      "points": 2,
+      "completed": false
+    },
+    {
+      "key": "yama",
+      "title": "Yama Mama",
+      "desc": "Get a piece of Oathplate from the big red guy!",
+      "points": 4,
+      "completed": false
+    },
+    {
+      "key": "captain_daddy",
+      "title": "Captain Daddy",
+      "desc": "Chart the entire ocean!",
+      "points": 4,
+      "completed": false
+    },
+    {
+      "key": "money_making_guide",
+      "title": "Money Making Guide",
+      "desc": "Get a unique drop from the Doom of Mokhaiotl",
+      "points": 3,
+      "completed": false
+    },
+    {
+      "key": "there's_money_in_slayer!",
+      "title": "There's Money in Slayer!",
+      "desc": "Get any unique drop from a Slayer monster!",
+      "points": 1,
+      "completed": false
+    }
+  ],
+  "players": {
+    "crixustzr": {
+      "name": "CrixusTZR",
+      "score": 0
+    },
+    "shohuld": {
+      "name": "Shohuld",
+      "score": 0
+    },
+    "sumariz": {
+      "name": "Sumariz",
+      "score": 0
+    },
+    "scuffy": {
+      "name": "Scuffy",
+      "score": 0
+    },
+    "faded_falcon": {
+      "name": "Faded Falcon",
+      "score": 0
+    },
+    "mining120": {
+      "name": "Mining120",
+      "score": 0
+    },
+    "vildmusen": {
+      "name": "Vildmusen",
+      "score": 0
+    },
+    "vandrefalk4": {
+      "name": "vandrefalk4",
+      "score": 0
+    }
+  }
+}

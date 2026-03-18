@@ -18,7 +18,7 @@ const bountyStore = useBountyStore();
   min-height: 12rem;
 }
 .placeholder-title {
-  font-size: 2.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
   text-align: center;
 }

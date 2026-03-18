@@ -43,6 +43,7 @@ onMounted(() => bountyStore.loadFromRemote());
   grid-column-start: 1;
   grid-row-start: 2;
   align-self: start;
+  width: 100%;
 }
 .grid-leaderboard {
   grid-column-start: 2;
@@ -62,7 +63,7 @@ onMounted(() => bountyStore.loadFromRemote());
   .grid-bounties {
     grid-column: 1;
     grid-row-start: 2;
-    max-width: 26rem;
+    max-width: 28rem;
     width: 100%;
   }
   .grid-leaderboard {

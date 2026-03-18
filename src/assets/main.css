@@ -74,7 +74,7 @@ body {
 }
 
 .osrs-scroll-middle {
-    background: url('@/assets/img/scroll.gif') center / 85% auto repeat-y;
+    background: url('@/assets/img/scroll.gif') center / 100% auto repeat-y;
     padding: 1rem 2.5rem;
     overflow: hidden;
 }
@@ -176,8 +176,7 @@ body {
     display: flex;
     flex-direction: column;
     padding: 0.75rem;
-    min-width: 12rem;
-    max-width: 18rem;
+    min-width: 0;
 }
 
 /* ── Recessed panel (shared by lists in modals/leaderboard) ── */

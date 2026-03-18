@@ -26,6 +26,7 @@ coverage
 *.sw?
 
 *.tsbuildinfo
+.claude
 
 .eslintcache
 
@@ -40,3 +41,4 @@ __screenshots__/
 *.timestamp-*-*.mjs
 
 .env
+CLAUDE.md

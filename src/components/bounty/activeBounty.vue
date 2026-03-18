@@ -12,7 +12,7 @@ defineProps({
 const showModal = ref(false);
 
 const handleClick = () => {
-  bountyStore.loadFromRemote(true);
+  bountyStore.loadFromRemote();
   showModal.value = true;
 };
 </script>
@@ -42,12 +42,12 @@ const handleClick = () => {
   gap: 0.25rem;
 }
 .bounty-title {
-  font-size: 2.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
   text-align: center;
 }
 .bounty-desc {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   text-align: center;
   word-break: break-word;
   overflow-wrap: break-word;
