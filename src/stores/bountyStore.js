@@ -25,7 +25,7 @@ export const useBountyStore = defineStore('bountyStore', {
                     }
                 }
             }
-
+    
             this.bounties = data.bounties;
             this.players = data.players;
         },
@@ -60,6 +60,20 @@ export const useBountyStore = defineStore('bountyStore', {
                 bounty.completed = true;
                 bounty.active = false;
             }
+            await this.saveToRemote();
+        },
+        async claimBountyMultiple(playerKeys, bountyKey) {
+            return;
+            await this.loadFromRemote();
+            const bounty = this.bounties[bountyKey];
+            playerKeys.forEach(player => {
+                if (!this.players[player]) return;    
+                this.players[player].score += bounty ? bounty.points : 1;
+                if (bounty) {
+                    bounty.completed = true;
+                    bounty.active = false;
+                }
+            });
             await this.saveToRemote();
         },
         async updateBounty(key, title, desc, points) {

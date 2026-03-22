@@ -5,8 +5,8 @@ const emit = defineEmits(['select']);
 
 <template>
   <div class="osrs-divider player-row">
-    <p class="player-name">{{ player.name }}</p>
-    <button class="osrs-btn" @click="emit('select', player.key)">Select</button>
+    <p for="chkPlayer" class="player-name">{{ player.name }}</p>
+    <input id="chkPlayer" type="checkbox" class="osrs-btn" @click="emit('select', player.key)"></input>
   </div>
 </template>
 
@@ -17,6 +17,7 @@ const emit = defineEmits(['select']);
   align-items: center;
   padding: 0.5rem 0;
 }
+
 .player-name {
   font-size: 1.25rem;
 }

@@ -1,48 +1,27 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/authStore.js";
 
 const router = useRouter();
 const authStore = useAuthStore();
-
-const pin = ref('');
+if (!authStore.hasPlayers) authStore.loadFromRemote();
 const error = ref(false);
+const selected = ref("Select user");
+const password = ref(null);
 
-function handleInput(digit) {
-  if (pin.value.length < 4) {
-    pin.value += digit;
-  }
-  if (pin.value.length === 4) {
-    submit();
-  }
-}
-
-function handleDelete() {
-  pin.value = pin.value.slice(0, -1);
-  error.value = false;
-}
-
-function submit() {
-  const success = authStore.login(pin.value);
-  if (success) {
+function handleInput() {
+  console.log(JSON.stringify(selected.value));
+  if (password.value === selected.value.password) {
+    authStore.login(selected.value.name.toLowerCase());
+    //salt hash whatever
     router.push("/home");
   } else {
     error.value = true;
-    pin.value = '';
+    password.value = null;
   }
 }
 
-function handleKeydown(e) {
-  if (e.key >= '0' && e.key <= '9') {
-    handleInput(e.key);
-  } else if (e.key === 'Backspace') {
-    handleDelete();
-  }
-}
-
-onMounted(() => window.addEventListener('keydown', handleKeydown));
-onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
 </script>
 
 <template>
@@ -51,34 +30,28 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
       <div class="osrs-scroll-top" />
       <div class="osrs-scroll-middle login-content">
         <h2 style="font-family: 'RuneScapeBold', serif; font-size: 1.5rem; color: #ffff00; text-align: center;">
-          Enter PIN
+          Log in to Kosestua
         </h2>
+        <select class="osrs-btn"
+          style="font-family: 'RuneScapeBold', serif; font-size: 1.5rem; color: #ffff00; text-align: center;"
+          v-model="selected">
+          <option disabled value="Select user">Select user</option>
+          <option style="font-family: 'RuneScapeBold', serif; font-size: 1.5rem; color: #ffff00; text-align: center;"
+            v-for="option in authStore.players" :value="option">
+            {{ option.name }}
+          </option>
+        </select>
+        <input class="osrs-input" v-model="password" placeholder="password" />
 
-        <!-- PIN dots -->
-        <div class="pin-dots">
-          <div v-for="i in 4" :key="i"
-               style="width: 1rem; height: 1rem; border-radius: 50%; border: 2px solid #4a3b1f;"
-               :style="{ background: pin.length >= i ? '#ffff00' : 'transparent' }"
-          />
-        </div>
+        <button class="osrs-btn"
+          style="font-family: 'RuneScapeBold', serif; font-size: 1.5rem; color: #ffff00; text-align: center;"
+          @click="handleInput()">
+          Log in
+        </button>
 
         <p v-if="error" style="font-family: 'RuneScapeSmall', serif; color: red; font-size: 0.95rem;">
-          Incorrect PIN. Try again.
+          Incorrect password.
         </p>
-
-        <!-- Numpad -->
-        <div class="numpad">
-          <button
-              v-for="digit in ['1','2','3','4','5','6','7','8','9','','0','⌫']"
-              :key="digit"
-              class="osrs-btn"
-              style="width: 3.5rem; height: 3.5rem; font-size: 1.2rem;"
-              :style="{ visibility: digit === '' ? 'hidden' : 'visible' }"
-              @click="digit === '⌫' ? handleDelete() : handleInput(digit)"
-          >
-            {{ digit }}
-          </button>
-        </div>
       </div>
       <div class="osrs-scroll-bottom" />
     </div>
@@ -92,6 +65,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
   align-items: center;
   justify-content: center;
 }
+
 .login-content {
   display: flex;
   flex-direction: column;
@@ -100,10 +74,12 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
+
 .pin-dots {
   display: flex;
   gap: 0.75rem;
 }
+
 .numpad {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

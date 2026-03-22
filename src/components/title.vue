@@ -1,3 +1,17 @@
+<script setup>
+import { useRouter } from "vue-router";
+import { useAuthStore } from '@/stores/authStore';
+const router = useRouter();
+const authStore = useAuthStore();
+
+function logout() {
+  authStore.logout();
+  router.push("/");
+}
+
+
+</script>
+
 <template>
   <div class="title-wrapper">
     <h1 class="title-text">
@@ -6,6 +20,11 @@
     </h1>
     <div class="title-divider"></div>
   </div>
+  <div class="title-sub" style="padding-top: 1.5rem;">Logged in as:
+    <div class="title-sub">{{ authStore.loggedInPlayer }}
+    </div>
+    <button class="osrs-btn" @click="logout()">Logout</button>
+  </div>
 </template>
 
 <style scoped>
@@ -13,12 +32,14 @@
   text-align: center;
   padding: 0.5rem 0 0.25rem;
 }
+
 .title-text {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0;
 }
+
 .title-main {
   font-size: 4rem;
   font-weight: 700;
@@ -31,6 +52,7 @@
     0 0 12px rgba(255, 152, 31, 0.4);
   letter-spacing: 0.08em;
 }
+
 .title-sub {
   font-size: 2.2rem;
   font-weight: 700;
@@ -43,6 +65,7 @@
   letter-spacing: 0.12em;
   margin-top: -0.3rem;
 }
+
 .title-divider {
   margin: 0.4rem auto 0;
   width: 280px;
@@ -54,9 +77,11 @@
   .title-main {
     font-size: 2.5rem;
   }
+
   .title-sub {
     font-size: 1.4rem;
   }
+
   .title-divider {
     width: 200px;
   }

@@ -12,9 +12,9 @@ onMounted(() => bountyStore.loadFromRemote());
 <template>
   <div class="home-page">
     <div class="home-grid">
-      <Title class="grid-title"/>
-      <BountyContainer class="grid-bounties" />
-      <Leaderboard class="grid-leaderboard"/>
+      <Title />
+      <BountyContainer />
+      <Leaderboard />
     </div>
   </div>
 </template>
@@ -26,6 +26,7 @@ onMounted(() => bountyStore.loadFromRemote());
   justify-content: center;
   margin: 1.5rem;
 }
+
 .home-grid {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -34,22 +35,26 @@ onMounted(() => bountyStore.loadFromRemote());
   gap: 1.5rem;
   justify-content: center;
 }
+
 .grid-title {
   font-size: 2.25rem;
   grid-column: span 2;
   grid-row-start: 1;
 }
+
 .grid-bounties {
   grid-column-start: 1;
   grid-row-start: 2;
   align-self: start;
   width: 100%;
 }
+
 .grid-leaderboard {
   grid-column-start: 2;
   grid-row-start: 2;
   align-self: start;
 }
+
 @media (max-width: 1200px) {
   .home-grid {
     grid-template-columns: 1fr;
@@ -57,15 +62,18 @@ onMounted(() => bountyStore.loadFromRemote());
     gap: 1rem;
     justify-items: center;
   }
+
   .grid-title {
     grid-column: 1;
   }
+
   .grid-bounties {
     grid-column: 1;
     grid-row-start: 2;
     max-width: 28rem;
     width: 100%;
   }
+
   .grid-leaderboard {
     grid-column: 1;
     grid-row-start: 3;
@@ -78,6 +86,7 @@ onMounted(() => bountyStore.loadFromRemote());
   .home-page {
     margin: 0.75rem;
   }
+
   .grid-title {
     font-size: 1.5rem;
   }

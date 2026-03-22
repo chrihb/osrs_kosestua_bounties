@@ -1,25 +1,34 @@
 import { defineStore } from 'pinia';
+import { fetchUserData, saveUserData } from '../services/dataService';
 
-const PIN = import.meta.env.VITE_PIN;
-
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore('authStore', {
     state: () => ({
-        loggedIn: false
+        loggedIn: false,
+        loggedInPlayer: null,
+        players: null
     }),
     actions: {
-        login(pin) {
-            if (pin === PIN) {
-                this.loggedIn = true;
-                return true;
-            }
-            return false;
+        async loadFromRemote() {
+            const data = await fetchUserData();
+            var playersObject = data[0];
+            this.players = playersObject;
+        },
+        login(playerKey) {
+            this.loggedIn = true;
+            this.loggedInPlayer = playerKey; 
+
         },
         logout() {
             this.loggedIn = false;
+            this.loggedInPlayer = null;
+        },
+        async createUser(data) {
+            await saveUserData(data);
         }
     },
     getters: {
-        isLoggedIn: (state) => state.loggedIn
+        isLoggedIn: (state) => state.loggedIn,
+        hasPlayers: (state) => state.players != null
     },
     persist: true
 });
