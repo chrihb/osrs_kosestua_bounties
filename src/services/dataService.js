@@ -1,10 +1,10 @@
 import axios from "axios";
 
-const MASTER_KEY = import.meta.env.VITE_JSONBIN_API_KEY;
+const ACCESS_KEY = import.meta.env.VITE_JSONBIN_API_KEY;
 const BOUNTY_URL = import.meta.env.VITE_JSONBIN_BOUNTY_URL;
 const USER_URL = import.meta.env.VITE_JSONBIN_USER_URL;
 
-const headers = { "X-Master-Key": MASTER_KEY };
+const headers = { "X-Access-Key": ACCESS_KEY };
 const jsonHeaders = { ...headers, "Content-Type": "application/json" };
 
 export const fetchBountyData = async () => {
