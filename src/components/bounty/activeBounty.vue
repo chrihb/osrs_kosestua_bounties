@@ -28,7 +28,8 @@ const handleClick = () => {
       <p class="bounty-points">
         {{ bounty.points ?? 1 }} point{{ (bounty.points ?? 1) !== 1 ? 's' : '' }}
       </p>
-      <button class="osrs-btn" @click="handleClick">Claim</button>
+      <span v-if="bounty.pending" class="pending-text">Pending...</span>
+      <button v-else class="osrs-btn" @click="handleClick">Claim</button>
     </div>
     <ClaimModal v-if="showModal" :bounty="bounty" @close="showModal = false" />
   </div>
@@ -64,5 +65,11 @@ const handleClick = () => {
 .bounty-points {
   font-size: 1.25rem;
   font-weight: 700;
+}
+.pending-text {
+  font-family: 'RuneScapeBold', serif;
+  font-size: 1rem;
+  color: #ff981f;
+  text-shadow: 1px 1px 0 #000;
 }
 </style>

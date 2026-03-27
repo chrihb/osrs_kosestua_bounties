@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
-import { fetchBountyData, saveBountyData } from '../services/dataService';
+import { fetchBountyData, saveBountyData, fetchUserData, saveUserData } from '../services/dataService';
+import bcrypt from 'bcryptjs';
 
 
 export const useBountyStore = defineStore('bountyStore', {
@@ -15,25 +16,26 @@ export const useBountyStore = defineStore('bountyStore', {
     },
     actions: {
         async loadFromRemote() {
-            const data = await fetchBountyData();
+            const [bountyData, players] = await Promise.all([fetchBountyData(), fetchUserData()]);
 
             // Migrate old format: merge activeBounties into bounties
-            if (data.activeBounties) {
-                for (const ab of data.activeBounties) {
-                    if (data.bounties[ab.key]) {
-                        data.bounties[ab.key].active = true;
+            if (bountyData.activeBounties) {
+                for (const ab of bountyData.activeBounties) {
+                    if (bountyData.bounties[ab.key]) {
+                        bountyData.bounties[ab.key].active = true;
                     }
                 }
             }
 
-            this.bounties = data.bounties;
-            this.players = data.players;
+            this.bounties = bountyData.bounties;
+            // handle both { players: {...} } and flat { key: {...} } shapes
+            this.players = players.players ?? players;
         },
         async saveToRemote() {
-            await saveBountyData({
-                bounties: this.bounties,
-                players: this.players
-            });
+            await saveBountyData({ bounties: this.bounties });
+        },
+        async savePlayersToRemote() {
+            await saveUserData(this.players);
         },
         async rollBounty() {
             await this.loadFromRemote();
@@ -60,7 +62,7 @@ export const useBountyStore = defineStore('bountyStore', {
                 bounty.completed = true;
                 bounty.active = false;
             }
-            await this.saveToRemote();
+            await Promise.all([this.saveToRemote(), this.savePlayersToRemote()]);
         },
         async updateBounty(key, title, desc, points) {
             await this.loadFromRemote();
@@ -83,11 +85,29 @@ export const useBountyStore = defineStore('bountyStore', {
             delete this.bounties[key];
             await this.saveToRemote();
         },
+        async setPending(key) {
+            await this.loadFromRemote();
+            if (this.bounties[key]) {
+                this.bounties[key].pending = true;
+                await this.saveToRemote();
+            }
+        },
         async addPlayer(key, name) {
             await this.loadFromRemote();
             if (this.players[key]) return;
             this.players[key] = { name, score: 0 };
-            await this.saveToRemote();
+            await this.savePlayersToRemote();
+        },
+        async registerPlayer(name, pin) {
+            await this.loadFromRemote();
+            const key = name.toLowerCase().replace(/\s+/g, '_');
+            if (this.players[key]) {
+                return { success: false, error: 'Username already taken.' };
+            }
+            const hashedPin = await bcrypt.hash(pin, 10);
+            this.players[key] = { name, pin: hashedPin, score: 0 };
+            await this.savePlayersToRemote();
+            return { success: true };
         }
     },
     persist: true

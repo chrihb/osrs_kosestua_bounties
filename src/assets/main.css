@@ -28,8 +28,7 @@ body {
     background-repeat: repeat-y;
     background-size: 70% auto;
     background-position: center top;
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
     color: #ffff00;
     font-family: 'RuneScape', serif;
     font-size: 1rem;
@@ -41,13 +40,6 @@ body {
     }
 }
 
-@media (max-width: 1200px) {
-    body {
-        height: auto;
-        min-height: 100vh;
-        overflow: auto;
-    }
-}
 
 @media (max-width: 768px) {
     .osrs-scroll-top,
