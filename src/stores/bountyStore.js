@@ -46,10 +46,11 @@ export const useBountyStore = defineStore('bountyStore', {
             this.bounties[key].active = true;
             await this.saveToRemote();
         },
-        async addBounty(key, title, desc, points = 1) {
+        async addBounty(key, title, desc, primaryPoints = 1, secondaryPoints = 0) {
             await this.loadFromRemote();
             if (this.bounties[key]) return;
-            this.bounties[key] = { title, desc, points, completed: false, active: false };
+            const nextId = Math.max(0, ...Object.values(this.bounties).map(b => b.id ?? 0)) + 1;
+            this.bounties[key] = { id: nextId, title, desc, primaryPoints, secondaryPoints, completed: false, active: false, pending: false };
             await this.saveToRemote();
         },
         async claimBounty(playerKey, bountyKey) {
@@ -64,13 +65,14 @@ export const useBountyStore = defineStore('bountyStore', {
             }
             await Promise.all([this.saveToRemote(), this.savePlayersToRemote()]);
         },
-        async updateBounty(key, title, desc, points) {
+        async updateBounty(key, title, desc, primaryPoints, secondaryPoints) {
             await this.loadFromRemote();
             const bounty = this.bounties[key];
             if (!bounty) return;
             bounty.title = title;
             bounty.desc = desc;
-            bounty.points = points;
+            bounty.primaryPoints = primaryPoints;
+            bounty.secondaryPoints = secondaryPoints;
             await this.saveToRemote();
         },
         async reactivateBounty(key) {
@@ -95,7 +97,8 @@ export const useBountyStore = defineStore('bountyStore', {
         async addPlayer(key, name) {
             await this.loadFromRemote();
             if (this.players[key]) return;
-            this.players[key] = { name, score: 0 };
+            const nextId = Math.max(0, ...Object.values(this.players).map(p => p.id ?? 0)) + 1;
+            this.players[key] = { id: nextId, name, score: 0 };
             await this.savePlayersToRemote();
         },
         async registerPlayer(name, pin) {
@@ -104,8 +107,9 @@ export const useBountyStore = defineStore('bountyStore', {
             if (this.players[key]) {
                 return { success: false, error: 'Username already taken.' };
             }
+            const nextId = Math.max(0, ...Object.values(this.players).map(p => p.id ?? 0)) + 1;
             const hashedPin = await bcrypt.hash(pin, 10);
-            this.players[key] = { name, pin: hashedPin, score: 0 };
+            this.players[key] = { id: nextId, name, pin: hashedPin, score: 0 };
             await this.savePlayersToRemote();
             return { success: true };
         }

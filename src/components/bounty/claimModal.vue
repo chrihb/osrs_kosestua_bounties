@@ -1,20 +1,25 @@
 <script setup>
 import ScrollContainer from "@/components/scrollContainer.vue";
+import ContributorsModal from "@/components/bounty/contributorsModal.vue";
 import { useAuthStore } from "@/stores/authStore.js";
 import { useBountyStore } from "@/stores/bountyStore.js";
-import { ref } from "vue";
-import axios from "axios";
+import { ref, computed } from "vue";
+import { sendCompletionRequest } from "@/services/discordService.js";
 
 const props = defineProps({ bounty: { type: Object, required: true } });
 const emit = defineEmits(['close']);
 
 const authStore = useAuthStore();
 const bountyStore = useBountyStore();
-const WEBHOOK_URL = import.meta.env.VITE_DISCORD_WEBHOOK_URL;
 
 const imageFile = ref(null);
 const imagePreview = ref(null);
 const status = ref('idle'); // 'idle' | 'sending' | 'success' | 'error'
+const contributors = ref([]);
+const showContributors = ref(false);
+const contributorNames = computed(() =>
+  contributors.value.map(key => bountyStore.players[key]?.name ?? key)
+);
 
 function onFileChange(e) {
   const file = e.target.files[0];
@@ -31,14 +36,14 @@ async function requestCompletion() {
   if (!imageFile.value) return;
   status.value = 'sending';
 
-  const formData = new FormData();
-  formData.append('files[0]', imageFile.value);
-  formData.append('payload_json', JSON.stringify({
-    content: `**Completion Request**\nBounty: \`${props.bounty.key}\`\nPlayer: \`${authStore.currentUser?.key}\``
-  }));
-
   try {
-    await axios.post(WEBHOOK_URL, formData);
+    const currentPlayerKey = authStore.currentUser?.key;
+    await sendCompletionRequest({
+      bountyId: props.bounty.id,
+      playerId: bountyStore.players[currentPlayerKey]?.id,
+      contributorIds: contributors.value.map(key => bountyStore.players[key]?.id).filter(Boolean),
+      imageFile: imageFile.value
+    });
     await bountyStore.setPending(props.bounty.key);
     status.value = 'success';
   } catch {
@@ -74,22 +79,48 @@ async function requestCompletion() {
           />
         </div>
 
+        <!-- Info box -->
+        <div class="osrs-panel info-box">
+          <div class="osrs-divider info-row">
+            <span class="info-label">Primary points</span>
+            <span class="info-value">{{ bounty.primaryPoints ?? bounty.points ?? 1 }}</span>
+          </div>
+          <div v-if="bounty.secondaryPoints" class="osrs-divider info-row">
+            <span class="info-label">Secondary points</span>
+            <span class="info-value">{{ bounty.secondaryPoints }}</span>
+          </div>
+          <div v-if="contributors.length" class="osrs-divider info-row">
+            <span class="info-label">Contributors</span>
+            <span class="info-value">{{ contributorNames.join(', ') }}</span>
+          </div>
+        </div>
+
         <p v-if="status === 'error'" class="status-text error-text">Failed to send. Try again.</p>
 
         <div class="btn-row">
           <button class="osrs-btn" :disabled="status === 'sending'" @click="emit('close')">Cancel</button>
+          <button v-if="bounty.secondaryPoints" class="osrs-btn" :disabled="status === 'sending'" @click="showContributors = true">
+            Contributors
+          </button>
           <button
             class="osrs-btn"
             :disabled="!imageFile || status === 'sending'"
             @click="requestCompletion"
           >
-            {{ status === 'sending' ? 'Sending...' : 'Request Completion' }}
+            {{ status === 'sending' ? 'Sending...' : 'Complete' }}
           </button>
         </div>
       </template>
 
     </ScrollContainer>
   </div>
+
+  <ContributorsModal
+    v-if="showContributors"
+    :selected="contributors"
+    @save="(list) => { contributors = list; showContributors = false; }"
+    @close="showContributors = false"
+  />
 </template>
 
 <style scoped>
@@ -156,5 +187,24 @@ async function requestCompletion() {
 }
 .error-text {
   color: red;
+}
+.info-box {
+  width: 100%;
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  font-family: 'RuneScapeSmall', serif;
+  font-size: 1rem;
+}
+.info-label {
+  color: #ffff00;
+}
+.info-value {
+  color: #ffff00;
 }
 </style>

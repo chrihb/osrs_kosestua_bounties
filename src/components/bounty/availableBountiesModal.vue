@@ -47,7 +47,7 @@ function closeEditBounty() {
             <p class="bounty-desc">{{ bounty.desc }}</p>
           </div>
           <div class="bounty-right">
-            <span class="bounty-points">{{ bounty.points }} pt{{ bounty.points !== 1 ? 's' : '' }}</span>
+            <span class="bounty-points">{{ bounty.primaryPoints ?? bounty.points }} pts</span>
             <span :class="bounty.completed ? 'status-complete' : 'status-incomplete'" class="bounty-status">
               {{ bounty.completed ? 'Completed' : 'Incomplete' }}
             </span>

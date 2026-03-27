@@ -25,9 +25,7 @@ const handleClick = () => {
     </div>
     <div class="spacer" />
     <div class="bounty-bottom">
-      <p class="bounty-points">
-        {{ bounty.points ?? 1 }} point{{ (bounty.points ?? 1) !== 1 ? 's' : '' }}
-      </p>
+      <p class="bounty-points">{{ bounty.primaryPoints ?? bounty.points ?? 1 }} pts</p>
       <span v-if="bounty.pending" class="pending-text">Pending...</span>
       <button v-else class="osrs-btn" @click="handleClick">Claim</button>
     </div>
