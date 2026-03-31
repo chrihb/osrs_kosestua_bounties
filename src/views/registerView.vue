@@ -2,6 +2,9 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { useBountyStore } from "@/stores/bountyStore.js";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import PinDots from "@/components/PinDots.vue";
+import Numpad from "@/components/Numpad.vue";
 
 const router = useRouter();
 const bountyStore = useBountyStore();
@@ -114,30 +117,12 @@ const currentPin = () => step.value === 'pin' ? pin.value : confirmPin.value;
             {{ step === 'pin' ? 'Choose a 4-digit PIN' : 'Confirm your PIN' }}
           </p>
 
-          <div class="pin-dots">
-            <div
-              v-for="i in 4" :key="i"
-              style="width: 1rem; height: 1rem; border-radius: 50%; border: 2px solid #4a3b1f;"
-              :style="{ background: currentPin().length >= i ? '#ffff00' : 'transparent' }"
-            />
-          </div>
+          <PinDots :length="currentPin().length" />
 
           <p v-if="error" class="error-text">{{ error }}</p>
-          <p v-if="loading" class="sub-heading">Registering...</p>
+          <LoadingSpinner v-if="loading" />
 
-          <div class="numpad">
-            <button
-              v-for="digit in ['1','2','3','4','5','6','7','8','9','','0','⌫']"
-              :key="digit"
-              class="osrs-btn"
-              style="width: 3.5rem; height: 3.5rem; font-size: 1.2rem;"
-              :style="{ visibility: digit === '' ? 'hidden' : 'visible' }"
-              :disabled="loading"
-              @click="digit === '⌫' ? handleDelete() : handleInput(digit)"
-            >
-              {{ digit }}
-            </button>
-          </div>
+          <Numpad :disabled="loading" @input="handleInput" @delete="handleDelete" />
           <div class="btn-row">
             <button class="osrs-btn" @click="router.push('/')">Back to Login</button>
           </div>
@@ -163,15 +148,6 @@ const currentPin = () => step.value === 'pin' ? pin.value : confirmPin.value;
   gap: 1.25rem;
   padding-top: 1rem;
   padding-bottom: 1rem;
-}
-.pin-dots {
-  display: flex;
-  gap: 0.75rem;
-}
-.numpad {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
 }
 .sub-heading {
   font-family: 'RuneScapeBold', serif;

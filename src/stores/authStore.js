@@ -9,9 +9,7 @@ export const useAuthStore = defineStore('auth', {
     }),
     actions: {
         async login(usernameKey, pin) {
-            const data = await fetchUserData();
-            // handle both { players: {...} } and flat { key: {...} } shapes
-            const users = data.players ?? data;
+            const users = await fetchUserData();
             const user = users[usernameKey];
             if (!user) return { success: false, error: 'User not found.' };
 

@@ -83,7 +83,7 @@ async function requestCompletion() {
         <div class="osrs-panel info-box">
           <div class="osrs-divider info-row">
             <span class="info-label">Primary points</span>
-            <span class="info-value">{{ bounty.primaryPoints ?? bounty.points ?? 1 }}</span>
+            <span class="info-value">{{ bounty.primaryPoints ?? 1 }}</span>
           </div>
           <div v-if="bounty.secondaryPoints" class="osrs-divider info-row">
             <span class="info-label">Secondary points</span>

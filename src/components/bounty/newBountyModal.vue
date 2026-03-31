@@ -2,6 +2,8 @@
 import { ref } from "vue";
 import { useBountyStore } from "@/stores/bountyStore.js";
 import ScrollContainer from "@/components/scrollContainer.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import { generateKey } from "@/utils/generateKey.js";
 
 const props = defineProps({
   bounty: { type: Object, default: null }
@@ -13,25 +15,29 @@ const title = ref(props.bounty?.title ?? '');
 const desc = ref(props.bounty?.desc ?? '');
 const primaryPoints = ref(props.bounty?.primaryPoints ?? props.bounty?.points ?? 1);
 const secondaryPoints = ref(props.bounty?.secondaryPoints ?? 0);
+const loadingAction = ref('');
 
-function submit() {
+async function submit() {
   if (!title.value.trim() || !desc.value.trim()) return;
+  loadingAction.value = 'submit';
   if (isEditing) {
-    bountyStore.updateBounty(props.bounty.key, title.value, desc.value, primaryPoints.value, secondaryPoints.value);
+    await bountyStore.updateBounty(props.bounty.key, title.value, desc.value, primaryPoints.value, secondaryPoints.value);
   } else {
-    const key = title.value.toLowerCase().replace(/\s+/g, '_');
-    bountyStore.addBounty(key, title.value, desc.value, primaryPoints.value, secondaryPoints.value);
+    const key = generateKey(title.value);
+    await bountyStore.addBounty(key, title.value, desc.value, primaryPoints.value, secondaryPoints.value);
   }
   emit('close');
 }
 
-function reactivate() {
-  bountyStore.reactivateBounty(props.bounty.key);
+async function reactivate() {
+  loadingAction.value = 'reactivate';
+  await bountyStore.reactivateBounty(props.bounty.key);
   emit('close');
 }
 
-function deleteBounty() {
-  bountyStore.deleteBounty(props.bounty.key);
+async function deleteBounty() {
+  loadingAction.value = 'delete';
+  await bountyStore.deleteBounty(props.bounty.key);
   emit('close');
 }
 </script>
@@ -47,15 +53,24 @@ function deleteBounty() {
         <input v-model="desc" class="osrs-input" placeholder="Description" />
         <div class="points-row">
           <label class="points-label">Primary pts</label>
-          <input v-model.number="primaryPoints" type="number" min="1" max="99" class="osrs-input points-input" />
+          <input v-model.number="primaryPoints" type="number" min="1" max="99" class="osrs-input points-input" :disabled="!!loadingAction" />
           <label class="points-label">Secondary pts</label>
-          <input v-model.number="secondaryPoints" type="number" min="0" max="99" class="osrs-input points-input" />
-          <button v-if="isEditing && bounty.completed" class="osrs-btn reactivate-btn" @click="reactivate">Reactivate</button>
+          <input v-model.number="secondaryPoints" type="number" min="0" max="99" class="osrs-input points-input" :disabled="!!loadingAction" />
+          <button v-if="isEditing && bounty.completed" class="osrs-btn reactivate-btn" @click="reactivate" :disabled="!!loadingAction">
+            <LoadingSpinner v-if="loadingAction === 'reactivate'" :small="true" />
+            <span v-else>Reactivate</span>
+          </button>
         </div>
         <div class="form-actions">
-          <button class="osrs-btn" @click="emit('close')">Cancel</button>
-          <button v-if="isEditing" class="osrs-btn delete-btn" @click="deleteBounty">Delete</button>
-          <button class="osrs-btn" @click="submit">{{ isEditing ? 'Save' : 'Add Bounty' }}</button>
+          <button class="osrs-btn" @click="emit('close')" :disabled="!!loadingAction">Cancel</button>
+          <button v-if="isEditing" class="osrs-btn delete-btn" @click="deleteBounty" :disabled="!!loadingAction">
+            <LoadingSpinner v-if="loadingAction === 'delete'" :small="true" />
+            <span v-else>Delete</span>
+          </button>
+          <button class="osrs-btn" @click="submit" :disabled="!!loadingAction">
+            <LoadingSpinner v-if="loadingAction === 'submit'" :small="true" />
+            <span v-else>{{ isEditing ? 'Save' : 'Add Bounty' }}</span>
+          </button>
         </div>
       </div>
     </ScrollContainer>

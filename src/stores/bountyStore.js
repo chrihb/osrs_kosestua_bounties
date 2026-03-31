@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { fetchBountyData, saveBountyData, fetchUserData, saveUserData } from '../services/dataService';
 import bcrypt from 'bcryptjs';
+import { generateKey } from '../utils/generateKey.js';
 
 
 export const useBountyStore = defineStore('bountyStore', {
@@ -13,6 +14,7 @@ export const useBountyStore = defineStore('bountyStore', {
             Object.entries(state.bounties)
                 .filter(([, b]) => b.active && !b.completed)
                 .map(([key, b]) => ({ key, ...b }))
+                .sort((a, b) => (a.slot ?? 99) - (b.slot ?? 99))
     },
     actions: {
         async loadFromRemote() {
@@ -27,9 +29,16 @@ export const useBountyStore = defineStore('bountyStore', {
                 }
             }
 
+            // Migrate old 'points' field to 'primaryPoints'
+            for (const bounty of Object.values(bountyData.bounties)) {
+                if (bounty.points !== undefined && bounty.primaryPoints === undefined) {
+                    bounty.primaryPoints = bounty.points;
+                    delete bounty.points;
+                }
+            }
+
             this.bounties = bountyData.bounties;
-            // handle both { players: {...} } and flat { key: {...} } shapes
-            this.players = players.players ?? players;
+            this.players = players;
         },
         async saveToRemote() {
             await saveBountyData({ bounties: this.bounties });
@@ -39,11 +48,32 @@ export const useBountyStore = defineStore('bountyStore', {
         },
         async rollBounty() {
             await this.loadFromRemote();
+
+            // Build used slots set, and migrate any active bounties missing a slot
+            const usedSlots = new Set(
+                Object.values(this.bounties)
+                    .filter(b => b.active && !b.completed && b.slot)
+                    .map(b => b.slot)
+            );
+            for (const b of Object.values(this.bounties)) {
+                if (b.active && !b.completed && !b.slot) {
+                    let s = 1;
+                    while (s <= 6 && usedSlots.has(s)) s++;
+                    b.slot = s;
+                    usedSlots.add(s);
+                }
+            }
+
             const available = Object.entries(this.bounties)
                 .filter(([, b]) => !b.active && !b.completed);
             if (available.length === 0) return;
             const [key] = available[Math.floor(Math.random() * available.length)];
+
+            let slot = 1;
+            while (slot <= 6 && usedSlots.has(slot)) slot++;
+
             this.bounties[key].active = true;
+            this.bounties[key].slot = slot;
             await this.saveToRemote();
         },
         async addBounty(key, title, desc, primaryPoints = 1, secondaryPoints = 0) {
@@ -62,6 +92,7 @@ export const useBountyStore = defineStore('bountyStore', {
             if (bounty) {
                 bounty.completed = true;
                 bounty.active = false;
+                bounty.slot = null;
             }
             await Promise.all([this.saveToRemote(), this.savePlayersToRemote()]);
         },
@@ -103,7 +134,7 @@ export const useBountyStore = defineStore('bountyStore', {
         },
         async registerPlayer(name, pin) {
             await this.loadFromRemote();
-            const key = name.toLowerCase().replace(/\s+/g, '_');
+            const key = generateKey(name);
             if (this.players[key]) {
                 return { success: false, error: 'Username already taken.' };
             }

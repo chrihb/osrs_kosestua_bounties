@@ -2,15 +2,19 @@
 import { ref } from "vue";
 import { useBountyStore } from "@/stores/bountyStore.js";
 import ScrollContainer from "@/components/scrollContainer.vue";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import { generateKey } from "@/utils/generateKey.js";
 
 const emit = defineEmits(['close']);
 const bountyStore = useBountyStore();
 const name = ref('');
+const loading = ref(false);
 
-function submit() {
+async function submit() {
   if (!name.value.trim()) return;
-  const key = name.value.toLowerCase().replace(/\s+/g, '_');
-  bountyStore.addPlayer(key, name.value);
+  loading.value = true;
+  const key = generateKey(name.value);
+  await bountyStore.addPlayer(key, name.value);
   emit('close');
 }
 </script>
@@ -24,8 +28,11 @@ function submit() {
       <div class="form-fields">
         <input v-model="name" class="osrs-input" placeholder="Player name" />
         <div class="form-actions">
-          <button class="osrs-btn" @click="emit('close')">Cancel</button>
-          <button class="osrs-btn" @click="submit">Add Player</button>
+          <button class="osrs-btn" @click="emit('close')" :disabled="loading">Cancel</button>
+          <button class="osrs-btn" @click="submit" :disabled="loading">
+            <LoadingSpinner v-if="loading" :small="true" />
+            <span v-else>Add Player</span>
+          </button>
         </div>
       </div>
     </ScrollContainer>

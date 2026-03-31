@@ -10,7 +10,7 @@ const router = createRouter({
         { path: "/", component: LoginView },
         { path: "/register", component: RegisterView },
         { path: "/home", component: HomeView, meta: { requiresAuth: true } },
-        { path: "/:pathMatch(.*)*", redirect: "/home" }
+        { path: "/:pathMatch(.*)*", redirect: "/" }
     ]
 });
 

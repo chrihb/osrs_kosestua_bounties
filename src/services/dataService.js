@@ -18,7 +18,8 @@ export const saveBountyData = async (data) => {
 
 export const fetchUserData = async () => {
     const response = await axios.get(`${USER_URL}/latest?meta=false`, { headers });
-    return response.data;
+    const data = response.data;
+    return data.players ?? data;
 };
 
 export const saveUserData = async (data) => {

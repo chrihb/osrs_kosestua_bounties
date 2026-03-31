@@ -1,6 +1,16 @@
 <script setup>
+import { ref } from "vue";
 import { useBountyStore } from "@/stores/bountyStore.js";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
+
 const bountyStore = useBountyStore();
+const loading = ref(false);
+
+const handleRoll = async () => {
+  loading.value = true;
+  await bountyStore.rollBounty();
+  loading.value = false;
+};
 </script>
 
 <template>
@@ -8,7 +18,10 @@ const bountyStore = useBountyStore();
     <p class="placeholder-title">Roll a Bounty</p>
     <div class="spacer" />
     <div class="placeholder-action">
-      <button class="osrs-btn" @click="bountyStore.rollBounty()">Roll</button>
+      <button class="osrs-btn" @click="handleRoll" :disabled="loading">
+        <LoadingSpinner v-if="loading" :small="true" />
+        <span v-else>Roll</span>
+      </button>
     </div>
   </div>
 </template>

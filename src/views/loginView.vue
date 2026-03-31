@@ -4,6 +4,9 @@ import { useRouter } from "vue-router";
 import { useAuthStore } from "@/stores/authStore.js";
 import { useBountyStore } from "@/stores/bountyStore.js";
 import { fetchUserData } from "@/services/dataService.js";
+import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import PinDots from "@/components/PinDots.vue";
+import Numpad from "@/components/Numpad.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -17,13 +20,15 @@ const selectedName = ref('');
 const pin = ref('');
 const error = ref('');
 const loading = ref(false);
+const usersLoading = ref(Object.keys(bountyStore.players).length === 0);
 
 onMounted(() => {
   // Show cached players instantly, then refresh in background
   users.value = bountyStore.players;
-  fetchUserData().then(data => {
-    users.value = data.players ?? data;
-  });
+  fetchUserData()
+    .then(data => { users.value = data; })
+    .catch(() => {})
+    .finally(() => { usersLoading.value = false; });
   window.addEventListener('keydown', handleKeydown);
 });
 onUnmounted(() => window.removeEventListener('keydown', handleKeydown));
@@ -49,6 +54,7 @@ function handleDelete() {
 async function submit() {
   loading.value = true;
   error.value = '';
+  bountyStore.loadFromRemote().catch(() => {});
   try {
     const result = await authStore.login(selectedKey.value, pin.value);
     if (result.success) {
@@ -88,7 +94,8 @@ function handleKeydown(e) {
             >
               {{ user.name }}
             </div>
-            <p v-if="!Object.keys(users).length" class="empty-text">No users registered yet.</p>
+            <LoadingSpinner v-if="usersLoading" :small="true" class="list-spinner" />
+            <p v-else-if="!Object.keys(users).length" class="empty-text">No users registered yet.</p>
           </div>
           <button class="osrs-btn" style="width: 100%;" @click="router.push('/register')">
             Register
@@ -99,29 +106,12 @@ function handleKeydown(e) {
         <template v-else>
           <p class="sub-heading">{{ selectedName }}</p>
 
-          <div class="pin-dots">
-            <div v-for="i in 4" :key="i"
-                 style="width: 1rem; height: 1rem; border-radius: 50%; border: 2px solid #4a3b1f;"
-                 :style="{ background: pin.length >= i ? '#ffff00' : 'transparent' }"
-            />
-          </div>
+          <PinDots :length="pin.length" />
 
           <p v-if="error" class="error-text">{{ error }}</p>
-          <p v-if="loading" class="sub-heading">Verifying...</p>
+          <LoadingSpinner v-if="loading" />
 
-          <div class="numpad">
-            <button
-                v-for="digit in ['1','2','3','4','5','6','7','8','9','','0','⌫']"
-                :key="digit"
-                class="osrs-btn"
-                style="width: 3.5rem; height: 3.5rem; font-size: 1.2rem;"
-                :style="{ visibility: digit === '' ? 'hidden' : 'visible' }"
-                :disabled="loading"
-                @click="digit === '⌫' ? handleDelete() : handleInput(digit)"
-            >
-              {{ digit }}
-            </button>
-          </div>
+          <Numpad :disabled="loading" @input="handleInput" @delete="handleDelete" />
 
           <button class="osrs-btn" style="width: 100%;" @click="step = 'select'; pin = ''; error = ''">
             Back
@@ -165,21 +155,16 @@ function handleKeydown(e) {
   background: rgba(255, 200, 60, 0.12);
   outline: 1px solid rgba(255, 200, 60, 0.3);
 }
+.list-spinner {
+  display: block;
+  margin: 0.25rem auto;
+}
 .empty-text {
   font-family: 'RuneScapeSmall', serif;
   color: #736a5e;
   font-size: 0.9rem;
   text-align: center;
   padding: 0.5rem 0;
-}
-.pin-dots {
-  display: flex;
-  gap: 0.75rem;
-}
-.numpad {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
 }
 .sub-heading {
   font-family: 'RuneScapeBold', serif;

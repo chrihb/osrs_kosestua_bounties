@@ -7,15 +7,22 @@ import ScrollContainer from "@/components/scrollContainer.vue";
 import AvailableBountiesModal from "@/components/bounty/availableBountiesModal.vue";
 
 const bountyStore = useBountyStore();
-const activeBounties = computed(() => bountyStore.activeBounties);
-const placeholderCount = computed(() => 6 - activeBounties.value.length);
+
+const slots = computed(() => {
+  const result = Array(6).fill(null);
+  for (const bounty of bountyStore.activeBounties) {
+    const i = (bounty.slot ?? 0) - 1;
+    if (i >= 0 && i < 6) result[i] = bounty;
+  }
+  return result;
+});
+
+const showModal = ref(false);
 
 const handleClick = () => {
   bountyStore.loadFromRemote();
   showModal.value = true;
 };
-
-const showModal = ref(false);
 </script>
 
 <template>
@@ -25,15 +32,10 @@ const showModal = ref(false);
         Active Bounties
       </h2>
       <div class="bounty-grid">
-        <ActiveBounty
-            v-for="(bounty, index) in activeBounties"
-            :key="bounty.key"
-            :bounty="bounty"
-        />
-        <PlaceholderBounty
-            v-for="i in placeholderCount"
-            :key="'placeholder-' + i"
-        />
+        <template v-for="(bounty, i) in slots" :key="i">
+          <ActiveBounty v-if="bounty" :bounty="bounty" />
+          <PlaceholderBounty v-else />
+        </template>
       </div>
       <div class="bottom-action">
         <button class="osrs-btn" @click="handleClick">All Bounties</button>
