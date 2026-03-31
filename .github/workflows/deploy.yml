@@ -28,11 +28,9 @@ jobs:
       - name: Build project
         run: npm run build
         env:
-          VITE_JSONBIN_API_KEY: ${{ secrets.VITE_JSONBIN_API_KEY }}
-          VITE_JSONBIN_BOUNTY_URL: ${{ secrets.VITE_JSONBIN_BOUNTY_URL }}
-          VITE_JSONBIN_USER_URL: ${{ secrets.VITE_JSONBIN_USER_URL }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           VITE_DISCORD_WEBHOOK_URL: ${{ secrets.VITE_DISCORD_WEBHOOK_URL }}
-          VITE_PIN: ${{ secrets.VITE_PIN }}
 
       - name: Verify dist contents
         run: ls -la dist

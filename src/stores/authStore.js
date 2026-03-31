@@ -12,6 +12,7 @@ export const useAuthStore = defineStore('auth', {
             const users = await fetchUserData();
             const user = users[usernameKey];
             if (!user) return { success: false, error: 'User not found.' };
+            if (!user.pin) return { success: false, error: 'This account has no PIN set.' };
 
             const match = await bcrypt.compare(pin, user.pin);
             if (!match) return { success: false, error: 'Incorrect PIN.' };
