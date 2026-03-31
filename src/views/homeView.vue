@@ -5,6 +5,7 @@ import Title from "@/components/title.vue";
 import Leaderboard from "@/components/leaderboard/leaderboard.vue";
 import { useBountyStore } from "@/stores/bountyStore.js";
 import LoadingSpinner from "@/components/LoadingSpinner.vue";
+import HistoryLog from "@/components/HistoryLog.vue";
 
 const bountyStore = useBountyStore();
 const loading = ref(Object.keys(bountyStore.bounties).length === 0);
@@ -30,7 +31,10 @@ onMounted(async () => {
     <div v-else class="home-grid">
       <Title class="grid-title"/>
       <BountyContainer class="grid-bounties" />
-      <Leaderboard class="grid-leaderboard"/>
+      <div class="grid-sidebar">
+        <Leaderboard />
+        <HistoryLog />
+      </div>
     </div>
   </div>
 </template>
@@ -74,9 +78,12 @@ onMounted(async () => {
   align-self: start;
   width: 100%;
 }
-.grid-leaderboard {
+.grid-sidebar {
   grid-column-start: 2;
   grid-row-start: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   align-self: start;
 }
 @media (max-width: 1200px) {
@@ -95,11 +102,11 @@ onMounted(async () => {
     max-width: 28rem;
     width: 100%;
   }
-  .grid-leaderboard {
+  .grid-sidebar {
     grid-column: 1;
     grid-row-start: 3;
-    max-width: 24rem;
     width: 100%;
+    max-width: 24rem;
   }
 }
 

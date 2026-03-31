@@ -30,7 +30,7 @@ const players = computed(() =>
 
 <style scoped>
 .leaderboard-scroll {
-  min-width: 15rem;
+  min-width: 24rem;
 }
 .leaderboard-inner {
   display: flex;

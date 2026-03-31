@@ -14,7 +14,7 @@ defineProps({
       <p>{{ player.name }}</p>
     </div>
     <p>
-      {{ player.score }}
+      {{ player.score }} pts
     </p>
   </div>
 </template>
@@ -31,5 +31,14 @@ defineProps({
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
+  color: #c8b878;
+}
+.entry-left p {
+  color: #ff981f;
+  font-weight: bold;
+}
+.entry > p {
+  color: #aaffaa;
+  font-weight: bold;
 }
 </style>

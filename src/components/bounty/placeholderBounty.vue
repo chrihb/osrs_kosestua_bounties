@@ -34,6 +34,7 @@ const handleRoll = async () => {
   font-size: 1.5rem;
   font-weight: 700;
   text-align: center;
+  color: #c8b878;
 }
 .spacer {
   flex: 1;

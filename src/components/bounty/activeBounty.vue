@@ -44,12 +44,14 @@ const handleClick = () => {
   font-size: 1.5rem;
   font-weight: 700;
   text-align: center;
+  color: #ff981f;
 }
 .bounty-desc {
   font-size: 1.1rem;
   text-align: center;
   word-break: break-word;
   overflow-wrap: break-word;
+  color: #c8b878;
 }
 .spacer {
   flex: 1;
@@ -63,6 +65,7 @@ const handleClick = () => {
 .bounty-points {
   font-size: 1.25rem;
   font-weight: 700;
+  color: #aaffaa;
 }
 .pending-text {
   font-family: 'RuneScapeBold', serif;

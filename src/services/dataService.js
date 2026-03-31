@@ -153,6 +153,28 @@ export const incrementUserScore = async (userId, amount) => {
 
 // --- HISTORY ---
 
+export const fetchHistory = async () => {
+    const { data, error } = await supabase
+        .from('history')
+        .select(`
+            id,
+            date,
+            claimer:user!history_user_id_fkey(username),
+            task(title, primary_points),
+            contributor(user:user_id(username))
+        `)
+        .order('date', { ascending: false });
+    if (error) throw error;
+    return data.map(({ id, date, claimer, task, contributor }) => ({
+        id,
+        claimedAt:    date,
+        claimer:      claimer?.username ?? 'Unknown',
+        task:         task?.title ?? 'Unknown',
+        points:       task?.primary_points ?? 0,
+        contributors: (contributor ?? []).map(c => c.user?.username).filter(Boolean),
+    }));
+};
+
 export const insertHistory = async (claimerId, taskId, contributorIds = []) => {
     const { data: historyRow, error: histError } = await supabase
         .from('history')
