@@ -4,27 +4,14 @@ import { generateKey } from '../utils/generateKey.js';
 // --- READ ---
 
 export const fetchBountyData = async () => {
-    const { data: tasks, error: tasksError } = await supabase
+    const { data: tasks, error } = await supabase
         .from('task')
-        .select('id, title, description, primary_points, secondary_points, completed');
-    if (tasksError) throw tasksError;
-
-    const { data: slots, error: slotsError } = await supabase
-        .from('bounty')
-        .select('id, task_id, pending');
-    if (slotsError) throw slotsError;
-
-    const slotByTaskId = {};
-    for (const slot of slots) {
-        if (slot.task_id !== null) {
-            slotByTaskId[slot.task_id] = { slot: slot.id, pending: slot.pending };
-        }
-    }
+        .select('id, title, description, primary_points, secondary_points, completed, slot, pending');
+    if (error) throw error;
 
     const bounties = {};
     for (const task of tasks) {
         const key = generateKey(task.title);
-        const slotInfo = slotByTaskId[task.id];
         bounties[key] = {
             id:              task.id,
             title:           task.title,
@@ -32,9 +19,9 @@ export const fetchBountyData = async () => {
             primaryPoints:   task.primary_points,
             secondaryPoints: task.secondary_points,
             completed:       task.completed,
-            active:          !!slotInfo,
-            slot:            slotInfo?.slot ?? null,
-            pending:         slotInfo?.pending ?? false,
+            active:          task.slot !== null,
+            slot:            task.slot ?? null,
+            pending:         task.pending ?? false,
         };
     }
     return bounties;
@@ -109,25 +96,25 @@ export const deleteTask = async (taskId) => {
 
 export const assignTaskToSlot = async (slotId, taskId) => {
     const { error } = await supabase
-        .from('bounty')
-        .update({ task_id: taskId, pending: false })
-        .eq('id', slotId);
+        .from('task')
+        .update({ slot: slotId, pending: false })
+        .eq('id', taskId);
     if (error) throw error;
 };
 
 export const clearSlotByTaskId = async (taskId) => {
     const { error } = await supabase
-        .from('bounty')
-        .update({ task_id: null, pending: false })
-        .eq('task_id', taskId);
+        .from('task')
+        .update({ slot: null, pending: false })
+        .eq('id', taskId);
     if (error) throw error;
 };
 
 export const setSlotPendingByTaskId = async (taskId) => {
     const { error } = await supabase
-        .from('bounty')
+        .from('task')
         .update({ pending: true })
-        .eq('task_id', taskId);
+        .eq('id', taskId);
     if (error) throw error;
 };
 

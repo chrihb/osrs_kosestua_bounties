@@ -56,11 +56,11 @@ async function deleteBounty() {
           <input v-model.number="primaryPoints" type="number" min="1" max="99" class="osrs-input points-input" :disabled="!!loadingAction" />
           <label class="points-label">Secondary pts</label>
           <input v-model.number="secondaryPoints" type="number" min="0" max="99" class="osrs-input points-input" :disabled="!!loadingAction" />
-          <button v-if="isEditing && bounty.completed" class="osrs-btn reactivate-btn" @click="reactivate" :disabled="!!loadingAction">
-            <LoadingSpinner v-if="loadingAction === 'reactivate'" :small="true" />
-            <span v-else>Reactivate</span>
-          </button>
         </div>
+        <button v-if="isEditing && bounty.completed" class="osrs-btn reactivate-btn" @click="reactivate" :disabled="!!loadingAction">
+          <LoadingSpinner v-if="loadingAction === 'reactivate'" :small="true" />
+          <span v-else>Reactivate</span>
+        </button>
         <div class="form-actions">
           <button class="osrs-btn" @click="emit('close')" :disabled="!!loadingAction">Cancel</button>
           <button v-if="isEditing" class="osrs-btn delete-btn" @click="deleteBounty" :disabled="!!loadingAction">
@@ -98,7 +98,8 @@ async function deleteBounty() {
   width: 5rem;
 }
 .reactivate-btn {
-  margin-left: auto;
+  width: 100%;
+  margin-top: 0.5rem;
 }
 .delete-btn {
   color: #ff3030;

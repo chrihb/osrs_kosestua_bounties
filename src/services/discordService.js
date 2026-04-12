@@ -1,17 +1,16 @@
 import axios from "axios";
 
 const WEBHOOK_URL = import.meta.env.VITE_DISCORD_WEBHOOK_URL;
+const KEY = import.meta.env.VITE_DISCORD_API_KEY;
 
 export const sendCompletionRequest = async ({ bountyId, playerId, contributorIds, imageFile }) => {
-    const contributorLine = contributorIds.length
-        ? `\nContributors: ${contributorIds.map(id => `\`${id}\``).join(', ')}`
-        : '';
-
     const formData = new FormData();
-    formData.append('files[0]', imageFile);
-    formData.append('payload_json', JSON.stringify({
-        content: `**Completion Request**\nBounty: \`${bountyId}\`\nPlayer: \`${playerId}\`${contributorLine}`
-    }));
+    formData.append("image", imageFile);
+    formData.append("bountyId", bountyId);
+    formData.append("playerId", playerId);
+    contributorIds.forEach(id => formData.append("contributorIds", id));
 
-    await axios.post(WEBHOOK_URL, formData);
+    await axios.post(WEBHOOK_URL, formData, {
+        headers: {"X-Api-Key": KEY}
+    });
 };
