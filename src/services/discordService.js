@@ -10,7 +10,6 @@ export const sendCompletionRequest = async ({ bountyId, playerId, contributorIds
     formData.append("playerId", playerId);
     contributorIds.forEach(id => formData.append("contributorIds", id));
 
-    console.log(KEY)
     await axios.post(WEBHOOK_URL, formData, {
         headers: {"X-Api-Key": KEY}
     });

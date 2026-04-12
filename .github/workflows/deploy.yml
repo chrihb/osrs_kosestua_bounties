@@ -31,6 +31,7 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           VITE_DISCORD_WEBHOOK_URL: ${{ secrets.VITE_DISCORD_WEBHOOK_URL }}
+          VITE_DISCORD_API_KEY: ${{ secrets.VITE_DISCORD_API_KEY }}
 
       - name: Verify dist contents
         run: ls -la dist
