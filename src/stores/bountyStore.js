@@ -56,23 +56,6 @@ export const useBountyStore = defineStore('bountyStore', {
             await this.loadFromRemote();
         },
 
-        async claimBounty(playerKey, bountyKey) {
-            await this.loadFromRemote();
-            const player = this.players[playerKey];
-            if (!player) return;
-            const bounty = this.bounties[bountyKey];
-            if (!bounty) return;
-
-            const points = bounty.primaryPoints ?? 1;
-            await Promise.all([
-                insertHistory(player.id, bounty.id),
-                incrementUserScore(player.id, points),
-                setTaskCompleted(bounty.id, true),
-                clearSlotByTaskId(bounty.id),
-            ]);
-            await this.loadFromRemote();
-        },
-
         async updateBounty(key, title, desc, primaryPoints, secondaryPoints) {
             const bounty = this.bounties[key];
             if (!bounty) return;
