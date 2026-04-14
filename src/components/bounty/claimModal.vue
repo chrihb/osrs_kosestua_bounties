@@ -23,6 +23,7 @@ const contributorNames = computed(() =>
 
 const dropZoneRef = ref(null);
 const dropZoneActive = ref(false);
+const isDraggingOver = ref(false);
 
 function onFileChange(e) {
   const file = e.target.files[0];
@@ -44,6 +45,24 @@ function onDocumentClick(e) {
   if (dropZoneRef.value && !dropZoneRef.value.contains(e.target)) {
     dropZoneActive.value = false;
   }
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+  isDraggingOver.value = true;
+}
+
+function onDragLeave() {
+  isDraggingOver.value = false;
+}
+
+function onDrop(e) {
+  e.preventDefault();
+  isDraggingOver.value = false;
+  const file = e.dataTransfer?.files[0];
+  if (!file || !file.type.startsWith('image/')) return;
+  imageFile.value = file;
+  imagePreview.value = URL.createObjectURL(file);
 }
 
 function onPaste(e) {
@@ -106,8 +125,8 @@ async function requestCompletion() {
 
       <template v-else>
         <!-- Image upload -->
-        <div ref="dropZoneRef" class="drop-zone" :class="{ 'has-image': imagePreview, 'is-active': dropZoneActive }"
-          @click="onDropZoneClick">
+        <div ref="dropZoneRef" class="drop-zone" :class="{ 'has-image': imagePreview, 'is-active': dropZoneActive, 'is-dragging': isDraggingOver }"
+          @click="onDropZoneClick" @dragover="onDragOver" @dragleave="onDragLeave" @drop="onDrop">
           <img v-if="imagePreview" :src="imagePreview" class="image-preview" alt="Preview" />
           <span v-else class="drop-label" @click="onLabelClick">
             <h4 style="text-align: center;">
@@ -191,6 +210,11 @@ async function requestCompletion() {
 .drop-zone.is-active {
   border-color: #c8a44a;
   border-style: solid;
+}
+.drop-zone.is-dragging {
+  border-color: #c8a44a;
+  border-style: solid;
+  background: linear-gradient(180deg, #2a2010 0%, #352a18 100%);
 }
 
 .drop-zone.has-image {
