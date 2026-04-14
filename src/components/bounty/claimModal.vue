@@ -3,7 +3,7 @@ import ScrollContainer from "@/components/scrollContainer.vue";
 import ContributorsModal from "@/components/bounty/contributorsModal.vue";
 import { useAuthStore } from "@/stores/authStore.js";
 import { useBountyStore } from "@/stores/bountyStore.js";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import { sendCompletionRequest } from "@/services/discordService.js";
 
 const props = defineProps({ bounty: { type: Object, required: true } });
@@ -21,6 +21,9 @@ const contributorNames = computed(() =>
   contributors.value.map(key => bountyStore.players[key]?.name ?? key)
 );
 
+const dropZoneRef = ref(null);
+const dropZoneActive = ref(false);
+
 function onFileChange(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -29,8 +32,44 @@ function onFileChange(e) {
 }
 
 function onDropZoneClick() {
+  dropZoneActive.value = true;
+}
+
+function onLabelClick(e) {
+  e.stopPropagation();
   document.getElementById('claim-file-input').click();
 }
+
+function onDocumentClick(e) {
+  if (dropZoneRef.value && !dropZoneRef.value.contains(e.target)) {
+    dropZoneActive.value = false;
+  }
+}
+
+function onPaste(e) {
+  if (!dropZoneActive.value) return;
+  const items = e.clipboardData?.items;
+  if (!items) return;
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      const file = item.getAsFile();
+      if (!file) continue;
+      imageFile.value = file;
+      imagePreview.value = URL.createObjectURL(file);
+      e.preventDefault();
+      break;
+    }
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('paste', onPaste);
+  document.addEventListener('click', onDocumentClick);
+});
+onUnmounted(() => {
+  window.removeEventListener('paste', onPaste);
+  document.removeEventListener('click', onDocumentClick);
+});
 
 async function requestCompletion() {
   if (!imageFile.value) return;
@@ -67,16 +106,18 @@ async function requestCompletion() {
 
       <template v-else>
         <!-- Image upload -->
-        <div class="drop-zone" :class="{ 'has-image': imagePreview }" @click="onDropZoneClick">
+        <div ref="dropZoneRef" class="drop-zone" :class="{ 'has-image': imagePreview, 'is-active': dropZoneActive }"
+          @click="onDropZoneClick">
           <img v-if="imagePreview" :src="imagePreview" class="image-preview" alt="Preview" />
-          <span v-else class="drop-label">Click to upload screenshot</span>
-          <input
-            id="claim-file-input"
-            type="file"
-            accept="image/*"
-            style="display: none;"
-            @change="onFileChange"
-          />
+          <span v-else class="drop-label" @click="onLabelClick">
+            <h4 style="text-align: center;">
+              Select the box to paste your image
+            </h4>
+            <h4 style="text-align: center;">
+              or click me to upload screenshot
+            </h4>
+          </span>
+          <input id="claim-file-input" type="file" accept="image/*" style="display: none;" @change="onFileChange" />
         </div>
 
         <!-- Info box -->
@@ -99,14 +140,11 @@ async function requestCompletion() {
 
         <div class="btn-row">
           <button class="osrs-btn" :disabled="status === 'sending'" @click="emit('close')">Cancel</button>
-          <button v-if="bounty.secondaryPoints" class="osrs-btn" :disabled="status === 'sending'" @click="showContributors = true">
+          <button v-if="bounty.secondaryPoints" class="osrs-btn" :disabled="status === 'sending'"
+            @click="showContributors = true">
             Contributors
           </button>
-          <button
-            class="osrs-btn"
-            :disabled="!imageFile || status === 'sending'"
-            @click="requestCompletion"
-          >
+          <button class="osrs-btn" :disabled="!imageFile || status === 'sending'" @click="requestCompletion">
             {{ status === 'sending' ? 'Sending...' : 'Complete' }}
           </button>
         </div>
@@ -115,25 +153,24 @@ async function requestCompletion() {
     </ScrollContainer>
   </div>
 
-  <ContributorsModal
-    v-if="showContributors"
-    :selected="contributors"
-    @save="(list) => { contributors = list; showContributors = false; }"
-    @close="showContributors = false"
-  />
+  <ContributorsModal v-if="showContributors" :selected="contributors"
+    @save="(list) => { contributors = list; showContributors = false; }" @close="showContributors = false" />
 </template>
 
 <style scoped>
 .modal-scroll {
   max-width: 28rem;
 }
+
 .claim-subtitle {
   font-family: 'RuneScapeBold', serif;
   font-size: 1.4rem;
   color: #ffff00;
   text-align: center;
   margin-bottom: 0.75rem;
+  text-shadow: 1px 1px 0 #000;
 }
+
 .drop-zone {
   width: 100%;
   min-height: 8rem;
@@ -146,54 +183,72 @@ async function requestCompletion() {
   transition: border-color 0.15s;
   overflow: hidden;
 }
+
 .drop-zone:hover {
   border-color: #c8a44a;
 }
+
+.drop-zone.is-active {
+  border-color: #c8a44a;
+  border-style: solid;
+}
+
 .drop-zone.has-image {
   border-style: solid;
   border-color: #4a3b1f;
   min-height: unset;
 }
+
 .drop-label {
   font-family: 'RuneScapeSmall', serif;
   font-size: 1rem;
   color: #ffff00;
+  text-decoration: underline;
+  cursor: pointer;
 }
+
 .image-preview {
   width: 100%;
   display: block;
   max-height: 16rem;
   object-fit: contain;
 }
+
 .btn-row {
   display: flex;
   gap: 0.5rem;
   justify-content: space-between;
   margin-top: 1rem;
 }
+
 .cancel-wrapper {
   display: flex;
   justify-content: center;
   margin-top: 1rem;
 }
+
 .status-text {
   font-family: 'RuneScapeSmall', serif;
   font-size: 1rem;
   text-align: center;
   margin-top: 0.5rem;
 }
+
 .success-text {
   color: #00ff00;
 }
+
 .error-text {
   color: red;
 }
+
 .info-box {
   width: 100%;
   margin-top: 0.75rem;
   display: flex;
   flex-direction: column;
 }
+
 .info-row {
   display: flex;
   justify-content: space-between;
@@ -201,9 +256,11 @@ async function requestCompletion() {
   font-family: 'RuneScapeSmall', serif;
   font-size: 1rem;
 }
+
 .info-label {
   color: #ffff00;
 }
+
 .info-value {
   color: #ffff00;
 }
